@@ -393,14 +393,18 @@ def pub_card(p, compact=False):
     if p.get("code_url"):
         links.append(link_btn(p["code_url"], "Code", "code"))
     venue = f'<em>{e(p["venue"])}</em>' + (f', {e(p["details"])}' if p.get("details") else "")
+    if p["status"] == "under-consideration":
+        venue = "<em>Manuscript under consideration</em>"
     note = f'<p class="name-note">{e(p["name_note"])}</p>' if p.get("name_note") else ""
+    if p.get("credit"):
+        note += f'<p class="credit">{e(p["credit"])}</p>'
     summary = "" if compact else f'<p class="summary">{e(p["summary"])}</p>'
     return f"""<article class="pub" data-year="{p['year']}" data-topic="{p['topic']}" data-status="{p['status']}" data-role="{p['role']}">
   <div class="pub-year" aria-hidden="true">{p['year']}</div>
   <div class="pub-body">
     <h3 class="pub-title">{e(p['title'])}</h3>
     <p class="authors">{authors_html(p['authors'])}</p>
-    <p class="venue">{venue} · {p['year']}</p>{note}
+    <p class="venue">{venue}{'' if p["status"] == "under-consideration" else ' · ' + str(p['year'])}</p>{note}
     {summary}
     <div class="pub-meta">{''.join(badges)}</div>
     {('<div class="pub-links">' + ''.join(links) + '</div>') if links else ''}
@@ -484,7 +488,7 @@ def home():
   <dl>
     <div><dt>Published papers</dt><dd>{n_pub}</dd><span>{n_j} journal · {n_c} conference</span></div>
     <div><dt>First-author papers</dt><dd>{n_first}</dd><span>of {n_pub} published</span></div>
-    <div><dt>Accepted, forthcoming</dt><dd>{n_acc}</dd><span>Sudanese Arabic NLP</span></div>
+    <div><dt>Accepted, forthcoming</dt><dd>{n_acc}</dd><span>+ {len(PUBS.get('under_consideration', []))} under consideration</span></div>
     <div><dt>Teaching since</dt><dd>2015</dd><span>University lecturer in computer science</span></div>
   </dl>
 </section>
@@ -572,7 +576,7 @@ def research():
     <div><h3>Why it matters</h3><p>{e(why)}</p></div>
   </div>
   {diagram(dg) if dg else ''}
-  {('<h3 class="refs-h">Related papers</h3>' + refs(ids)) if ids else '<p class="muted">Manuscript under review; code at <a href="https://github.com/MOHAMMED-ABDALSALAM-PG/S175-ML-surrogate">S175-ML-surrogate</a>.</p>'}
+  {('<h3 class="refs-h">Related papers</h3>' + refs(ids)) if ids else '<p class="muted">Manuscript under consideration; code at <a href="https://github.com/MOHAMMED-ABDALSALAM-PG/S175-ML-surrogate">S175-ML-surrogate</a>.</p>'}
 </section>""")
     body = f"""<section class="wrap page-head"><p class="eyebrow">Research</p><h1>Algorithms, computing and language</h1>
 <p class="lede">My doctoral work, <em>{e(PROFILE['dissertation'])}</em>, connects evolutionary optimisation, machine learning and parallel computing. Alongside it, I build data and models for low-resource Arabic.</p>
@@ -592,9 +596,10 @@ def publications():
         items = "".join(pub_card(p) for p in pubs if p["year"] == y)
         groups.append(f'<section class="year-group" data-year="{y}"><h2 class="year-h">{y}</h2>{items}</section>')
     acc_cards = "".join(pub_card(a) for a in acc)
+    uc_cards = "".join(pub_card(a) for a in PUBS.get("under_consideration", []))
     n_j = sum(1 for p in pubs if p["type"] == "journal")
     body = f"""<section class="wrap page-head"><p class="eyebrow">Publications</p><h1>Peer-reviewed publications</h1>
-<p class="lede">{len(pubs)} published papers — {n_j} journal articles and {len(pubs) - n_j} conference paper — plus {len(acc)} accepted papers on Sudanese Arabic NLP. Further manuscripts are under review and are listed with their code on the <a href="/projects/">software page</a>. The 2019 paper appears under the earlier name form “Mohammed ALfatih”.</p>
+<p class="lede">{len(pubs)} published papers — {n_j} journal articles and {len(pubs) - n_j} conference paper — plus {len(acc)} accepted papers on Sudanese Arabic NLP. {len(PUBS.get('under_consideration', []))} further manuscripts are under consideration and are listed separately below. The 2019 paper appears under the earlier name form “Mohammed ALfatih”.</p>
 <p class="lede small">Every entry was checked against its DOI record (Crossref) or the journal, and against the ORCID record <a href="https://orcid.org/{PROFILE['orcid']}">{PROFILE['orcid']}</a>. Summaries are written from the published abstracts; where an abstract could not be accessed, the summary is limited to what the title and venue state. A machine-readable version is available as <a href="/publications.json">publications.json</a>.</p></section>
 
 <section class="wrap charts-row">{chart_pubs_by_year(PUBS['publications'])}{chart_topics(PUBS['publications'], acc)}</section>
@@ -602,6 +607,12 @@ def publications():
 <section class="wrap" aria-labelledby="acc-h">
   <h2 id="acc-h" class="block-h">Accepted papers <span class="muted">— not yet published</span></h2>
   <div class="pub-list accepted-list">{acc_cards}</div>
+</section>
+
+<section class="wrap" aria-labelledby="uc-h">
+  <h2 id="uc-h" class="block-h">Under consideration <span class="muted">— submitted manuscripts</span></h2>
+  <p class="muted section-note">Submitted work that is still being reviewed. Journals are not named until a decision is made; code and data are already public.</p>
+  <div class="pub-list accepted-list">{uc_cards}</div>
 </section>
 
 <section class="wrap" aria-labelledby="pub-h">
