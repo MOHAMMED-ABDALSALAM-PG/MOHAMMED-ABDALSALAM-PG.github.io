@@ -1,0 +1,32 @@
+{
+  "_comment": "Datasets and models created by the author. Availability must reflect what is actually public.",
+  "resources": [
+    {
+      "name": "Sudanese Arabic harmful-language corpus",
+      "kind": "Dataset",
+      "description": "About 40,000 Sudanese Arabic sentences from Telegram and Twitter (2015–2020 and 2023–2025), labelled for binary and three-class harmful-language detection with a hybrid framework: Sudanese-specific weak-supervision rules plus large language model annotation, followed by human review of a stratified 10,000-sentence sample by three native speakers.",
+      "availability": "Public: record identifiers, splits and labels (texts are not redistributed)",
+      "public": true,
+      "url": "https://github.com/scander91/sudanese-hate-speech-detection/tree/main/data/ids",
+      "related": "abdalsalam2026hate"
+    },
+    {
+      "name": "Sudanese Arabic app-review sentiment corpus",
+      "kind": "Dataset",
+      "description": "13,293 Sudanese Arabic Google Play reviews of eight banking, telecom and transport apps, labelled negative / neutral / positive, with leakage-safe grouped splits that keep near-duplicate reviews in the same partition. Built for benchmarking Arabic encoders, sector-aware models and ensembles on Sudanese sentiment.",
+      "availability": "Not yet publicly released — enquiries by email",
+      "public": false,
+      "url": null,
+      "related": null
+    },
+    {
+      "name": "SudaBERT-v2",
+      "kind": "Language model",
+      "description": "A Sudanese Arabic BERT encoder initialised from the original SudaBERT (Elgezouli et al., 2021) and further pre-trained with masked language modelling on 452,410 Telegram sentences from 2023–2025, so that it covers recent and conflict-era vocabulary. Evaluated in the author's dialect-identification, sentiment and harmful-language studies.",
+      "availability": "Not yet publicly released — enquiries by email",
+      "public": false,
+      "url": null,
+      "related": "abdalsalam2026hate"
+    }
+  ]
+}

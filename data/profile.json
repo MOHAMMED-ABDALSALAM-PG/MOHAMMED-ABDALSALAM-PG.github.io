@@ -1,0 +1,163 @@
+{
+  "name": "Mohammed Alfatih Osman Abdalsalam",
+  "short_name": "Mohammed Abdalsalam",
+  "title": "PhD Candidate in Information and Communication Technology",
+  "affiliation": "Gdańsk University of Technology",
+  "department": "Faculty of Electronics, Telecommunications and Informatics",
+  "location": "Gdańsk, Poland",
+  "email": "mohammed.abdalsalam@pg.edu.pl",
+  "orcid": "0000-0001-9729-2609",
+  "github": "MOHAMMED-ABDALSALAM-PG",
+  "github_nlp": "scander91",
+  "site_url": "https://mohammed-abdalsalam-pg.github.io",
+  "headline": [
+    "AI Researcher",
+    "Multi-Objective Optimization",
+    "High-Performance Computing",
+    "Arabic NLP"
+  ],
+  "intro": "I design algorithms that make hard decisions computable. My doctoral research builds multi-objective evolutionary optimisers and machine-learning surrogates for ship weather routing and accelerates them on multi-core CPUs and GPUs. In parallel, I work on language technology for low-resource Arabic, especially Sudanese Arabic, where data are scarce and annotation is costly.",
+  "dissertation": "Multi-objective Weather Routing Optimization Based on AI Techniques and Parallel Acceleration Technologies",
+  "supervisors": [
+    "dr hab. inż. Joanna Szłapczyńska",
+    "dr hab. inż. Paweł Czarnul"
+  ],
+  "education": [
+    {
+      "degree": "PhD in Information and Communication Technology",
+      "institution": "Gdańsk University of Technology",
+      "place": "Gdańsk, Poland",
+      "period": "Oct 2024 – present",
+      "note": "Dissertation: Multi-objective Weather Routing Optimization Based on AI Techniques and Parallel Acceleration Technologies. Supervisors: dr hab. inż. Joanna Szłapczyńska (ship routing, multi-objective optimisation) and dr hab. inż. Paweł Czarnul (high-performance computing)."
+    },
+    {
+      "degree": "MSc in Information Technology (First Class)",
+      "institution": "University of Madras",
+      "place": "Chennai, India",
+      "period": "2013 – 2015",
+      "note": ""
+    },
+    {
+      "degree": "BSc in Information Technology",
+      "institution": "Al-Zaeim Al-Azhari University",
+      "place": "Khartoum, Sudan",
+      "period": "2012",
+      "note": ""
+    }
+  ],
+  "experience": [
+    {
+      "role": "University Lecturer",
+      "org": "University of the Holy Quran and Islamic Sciences, Sudan",
+      "period": "Nov 2016 – present",
+      "points": [
+        "Lectures and workshops in computer science, AI and information technology; supervision of student research projects."
+      ]
+    },
+    {
+      "role": "Arabic NLP Researcher",
+      "org": "Arabic dialects and Arabic handwriting (independent research and collaborations)",
+      "period": "2024 – present",
+      "points": [
+        "Hybrid weak-supervision and LLM annotation framework for Sudanese Arabic harmful-language detection.",
+        "Evaluation of BERT-based models and large language models for Sudanese Arabic dialect identification.",
+        "Co-developed Arabic handwritten character recognition models (CNN, CNN–KAN, attention) and co-authored multi-task Arabic grammatical error correction."
+      ]
+    },
+    {
+      "role": "Research Assistant",
+      "org": "Wuhan University of Technology (China) & Sudan University of Science and Technology",
+      "period": "Sep 2018 – 2024",
+      "points": [
+        "Deep-learning models (CNN, BiGRU, self-attention) for text classification and prediction on Global Terrorism Database event descriptions, including feature design and error analysis."
+      ]
+    },
+    {
+      "role": "Lecturer",
+      "org": "Cambridge International College, Al-Naser Technical University, Al-Hayat College, Al-Wasila International College (Sudan)",
+      "period": "2015 – 2019",
+      "points": [
+        "Taught computer science and engineering courses; developed curricula and assessments."
+      ]
+    }
+  ],
+  "scholarships": [
+    "Polonium International Doctoral Fellowship — Gdańsk University of Technology, Excellence Initiative – Research University (IDUB)",
+    "NAWA PROM scholarship — international scholarship exchange of doctoral students, Gdańsk University of Technology",
+    "Erasmus+ mobility participant"
+  ],
+  "presentations": [
+    "Presenter, 16th International Conference on Marine Navigation and Safety of Sea Transportation (TransNav 2025), Gdynia, Poland, 11–13 June 2025",
+    "Presenter, International Conference on Artificial Intelligence and Computer Science (AICS 2019), Hubei, China, 2019"
+  ],
+  "awards": [
+    "Nominated for best lecturer, Cambridge International College, Sudan (2016)"
+  ],
+  "skills": [
+    {
+      "group": "Programming & HPC",
+      "items": [
+        "Python",
+        "C/C++",
+        "CUDA",
+        "OpenMP",
+        "MPI",
+        "GPU computing"
+      ]
+    },
+    {
+      "group": "AI & Machine Learning",
+      "items": [
+        "PyTorch",
+        "TensorFlow",
+        "scikit-learn",
+        "XGBoost",
+        "LightGBM",
+        "CNN / BiGRU / LSTM / attention",
+        "Surrogate modelling"
+      ]
+    },
+    {
+      "group": "Optimization",
+      "items": [
+        "NSGA-II",
+        "SPEA2",
+        "MOEA/D",
+        "Pareto-front analysis",
+        "Hypervolume / IGD"
+      ]
+    },
+    {
+      "group": "NLP",
+      "items": [
+        "Arabic dialect identification",
+        "BERT-based models",
+        "LLM evaluation",
+        "Weak supervision",
+        "Grammatical error correction"
+      ]
+    },
+    {
+      "group": "Research tools",
+      "items": [
+        "Git",
+        "LaTeX",
+        "Zotero",
+        "Reproducibility packages"
+      ]
+    }
+  ],
+  "languages": "Arabic (native), English (excellent), Chinese (basic)",
+  "employer": "University of the Holy Quran and Islamic Sciences",
+  "employer_place": "Sudan",
+  "employer_role": "University Lecturer",
+  "doctoral": {
+    "institution": "Gdańsk University of Technology",
+    "period": "Oct 2024 – present",
+    "points": [
+      "Parallel multi-objective evolutionary algorithms (NSGA-II, SPEA2, MOEA/D) with OpenMP, CUDA and hybrid CPU–GPU execution for ship weather routing.",
+      "Machine-learning surrogate models of the S175 ship-performance simulator within the ERA-NET MarTERA ROUTING project.",
+      "Collaboration with Prof. Daniele Vigo and Dr. Luca Accorsi (Italy) on multi-objective vehicle routing."
+    ]
+  }
+}

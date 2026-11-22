@@ -1,0 +1,53 @@
+name: Build and deploy site
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 5 * * 1" # weekly: refresh public repository metadata and re-check links
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Refresh public metadata of curated repositories
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/fetch_github.py || echo "metadata refresh failed; building with committed data"
+      - name: Build
+        run: python build.py
+      - name: Privacy and internal-link checks
+        run: python scripts/check_site.py
+      - name: External link check (report only)
+        if: github.event_name != 'push'
+        continue-on-error: true
+        run: python scripts/check_site.py --external
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
