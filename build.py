@@ -400,7 +400,7 @@ def pub_card(p, compact=False):
         note += f'<p class="credit">{e(p["credit"])}</p>'
     summary = "" if compact else f'<p class="summary">{e(p["summary"])}</p>'
     return f"""<article class="pub" data-year="{p['year']}" data-topic="{p['topic']}" data-status="{p['status']}" data-role="{p['role']}">
-  <div class="pub-year" aria-hidden="true">{p['year']}</div>
+  <div class="pub-year" aria-hidden="true">{'' if p['status'] == 'under-consideration' else p['year']}</div>
   <div class="pub-body">
     <h3 class="pub-title">{e(p['title'])}</h3>
     <p class="authors">{authors_html(p['authors'])}</p>
