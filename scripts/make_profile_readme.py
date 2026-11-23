@@ -17,7 +17,7 @@ n_j = sum(1 for p in pubs if p["type"] == "journal")
 lines = [
     f"# {P['name']}",
     "",
-    f"**PhD candidate in Information and Communication Technology, {P['affiliation']}** · "
+    "**PhD Student** · "
     f"{P['employer_role']}, {P['employer']} ({P['employer_place']})",
     "",
     "I work on multi-objective evolutionary optimisation and high-performance computing for ship weather routing, "

@@ -77,8 +77,7 @@ def page(path, title, description, body, extra_head=""):
         "@context": "https://schema.org", "@type": "Person",
         "name": PROFILE["name"], "alternateName": [PROFILE["short_name"], "Mohammed ALfatih"],
         "jobTitle": PROFILE["title"], "email": "mailto:" + PROFILE["email"],
-        "affiliation": {"@type": "CollegeOrUniversity", "name": PROFILE["affiliation"], "description": "PhD studies"},
-        "worksFor": {"@type": "CollegeOrUniversity", "name": PROFILE["employer"]},
+                "worksFor": {"@type": "CollegeOrUniversity", "name": PROFILE["employer"]},
         "url": SITE + "/", "image": SITE + "/assets/img/portrait-640.jpg",
         "sameAs": [f"https://orcid.org/{PROFILE['orcid']}", f"https://github.com/{PROFILE['github']}",
                    f"https://github.com/{PROFILE['github_nlp']}"],
@@ -455,7 +454,7 @@ def sidebar():
     </picture></a>
     <div>
       <p class="side-name">{e(PROFILE['short_name'])}</p>
-      <p class="side-title">PhD Candidate</p>
+      <p class="side-title">PhD Student</p>
       <p class="side-sub">AI &amp; HPC Researcher</p>
     </div>
   </div>
@@ -467,7 +466,6 @@ def sidebar():
     <dl class="side-dl">
       <div><dt>Location</dt><dd>{e(PROFILE['location'])}</dd></div>
       <div><dt>Email</dt><dd><a href="mailto:{PROFILE['email']}">{e(PROFILE['email'])}</a></dd></div>
-      <div><dt>Ph.D.</dt><dd>Since Oct 2024</dd></div>
       <div><dt>Lecturer</dt><dd>Univ. of the Holy Quran &amp; Islamic Sciences</dd></div>
     </dl>
     <ul class="side-links">{lk}</ul>
@@ -540,7 +538,7 @@ def home():
 
     rec = [
         ("Appointment", "University Lecturer", "University of the Holy Quran and Islamic Sciences, Sudan · Nov 2016–present"),
-        ("Ph.D.", "Information and Communication Technology", f"{PROFILE['affiliation']} · since Oct 2024"),
+        ("Ph.D.", "PhD Student", "Information and Communication Technology"),
         ("Research", "Research Assistant", "Wuhan University of Technology & Sudan University of Science and Technology · 2018–2024"),
         ("M.Sc.", "Information Technology (First Class)", "University of Madras, India · 2015"),
         ("B.Sc.", "Information Technology", "Al-Zaeim Al-Azhari University, Sudan · 2012"),
@@ -552,7 +550,7 @@ def home():
 
     body = f"""
 <section class="intro-block">
-  <p class="eyebrow">PhD Candidate · AI &amp; HPC Researcher</p>
+  <p class="eyebrow">PhD Student · AI &amp; HPC Researcher</p>
   <h1>HPC-based multi-objective optimisation for ships at sea.</h1>
   <p>I design algorithms that make hard decisions computable. My doctoral research builds multi-objective evolutionary optimisers and machine-learning surrogates for ship weather routing, and accelerates them on multi-core CPUs and GPUs.</p>
   <p>In parallel, I build data and models for Sudanese Arabic, where labelled data are scarce: corpora, LLM-assisted annotation, harmful-language detection and dialect identification. I have taught computer science at university level since 2015.</p>
@@ -603,7 +601,7 @@ def home():
   <p class="block-lede">I welcome conversations about research collaboration, datasets, and academic positions.</p>
   <p><a class="mail-big" href="mailto:{PROFILE['email']}">{e(PROFILE['email'])} →</a></p>
 </section>"""
-    return page("/", PROFILE["name"], "Mohammed Abdalsalam, PhD candidate: multi-objective ship weather routing, parallel optimisation on CPUs and GPUs, machine-learning surrogates, and Sudanese Arabic NLP.",
+    return page("/", PROFILE["name"], "Mohammed Abdalsalam, PhD student: multi-objective ship weather routing, parallel optimisation on CPUs and GPUs, machine-learning surrogates, and Sudanese Arabic NLP.",
                 body, extra_head='<script src="/assets/js/routing-lab.js" defer></script>')
 
 
@@ -755,18 +753,17 @@ def projects():
 
 
 def about():
-    edu = "".join(f"""<li><span class="when">{e(x['period'])}</span><div><h3>{e(x['degree'])}</h3><p class="org">{e(x['institution'])}, {e(x['place'])}</p>{('<p>' + e(x['note']) + '</p>') if x['note'] else ''}</div></li>""" for x in PROFILE["education"])
+    edu = "".join(f"""<li><span class="when">{e(x['period'])}</span><div><h3>{e(x['degree'])}</h3>{('<p class="org">' + e(x['institution']) + ', ' + e(x['place']) + '</p>') if x['institution'] else ''}{('<p>' + e(x['note']) + '</p>') if x['note'] else ''}</div></li>""" for x in PROFILE["education"])
     exp = "".join(f"""<li><span class="when">{e(x['period'])}</span><div><h3>{e(x['role'])}</h3><p class="org">{e(x['org'])}</p><ul>{''.join('<li>' + e(pt) + '</li>' for pt in x['points'])}</ul></div></li>""" for x in PROFILE["experience"])
     skills = "".join(f"""<div class="skill-group"><h3>{e(s['group'])}</h3><ul>{''.join('<li>' + e(i) + '</li>' for i in s['items'])}</ul></div>""" for s in PROFILE["skills"])
     lst = lambda xs: "".join(f"<li>{e(x)}</li>" for x in xs)
     body = f"""<section class="wrap page-head"><p class="eyebrow">About</p><h1>Background</h1>
-<p class="lede">I am a PhD candidate in Information and Communication Technology at Gdańsk University of Technology (since October 2024), supervised by dr hab. inż. Joanna Szłapczyńska and dr hab. inż. Paweł Czarnul. Professionally, I am a University Lecturer at the University of the Holy Quran and Islamic Sciences in Sudan (since 2016), after teaching at several colleges from 2015; from 2018 to 2024 I was a research assistant with Wuhan University of Technology and Sudan University of Science and Technology.</p></section>
+<p class="lede">I am a PhD student in Information and Communication Technology, supervised by dr hab. inż. Joanna Szłapczyńska and dr hab. inż. Paweł Czarnul. Professionally, I am a University Lecturer at the University of the Holy Quran and Islamic Sciences in Sudan (since 2016), after teaching at several colleges from 2015; from 2018 to 2024 I was a research assistant with Wuhan University of Technology and Sudan University of Science and Technology.</p></section>
 <div class="wrap about-grid">
   <section aria-labelledby="edu-h"><h2 id="edu-h" class="block-h">Education</h2><ol class="timeline">{edu}</ol></section>
   <section aria-labelledby="exp-h"><h2 id="exp-h" class="block-h">Professional experience</h2><ol class="timeline">{exp}</ol></section>
 </div>
 <section class="wrap" aria-labelledby="doc-h"><h2 id="doc-h" class="block-h">Doctoral research</h2>
-<p class="muted">PhD studies at {e(PROFILE['doctoral']['institution'])}, {e(PROFILE['doctoral']['period'])}.</p>
 <ul class="plain">{''.join('<li>' + e(pt) + '</li>' for pt in PROFILE['doctoral']['points'])}</ul></section>
 <section class="wrap" aria-labelledby="sk-h"><h2 id="sk-h" class="block-h">Skills</h2><div class="skills">{skills}</div><p class="muted">Languages: {e(PROFILE['languages'])}.</p></section>
 <div class="wrap about-grid three">
@@ -776,7 +773,7 @@ def about():
 </div>
 <section class="wrap section contact-band" id="contact"><h2>Contact</h2>
 <p>Email: <a href="mailto:{PROFILE['email']}">{e(PROFILE['email'])}</a></p>
-<p class="muted">PhD candidate at {e(PROFILE['affiliation'])}, {e(PROFILE['location'])} · ORCID <a href="https://orcid.org/{PROFILE['orcid']}">{PROFILE['orcid']}</a></p></section>"""
+<p class="muted">PhD student · ORCID <a href="https://orcid.org/{PROFILE['orcid']}">{PROFILE['orcid']}</a></p></section>"""
     return page("/about/", "About", "Education, research and teaching experience, and skills of Mohammed Abdalsalam.", body)
 
 

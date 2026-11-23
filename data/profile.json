@@ -1,7 +1,7 @@
 {
   "name": "Mohammed Alfatih Osman Abdalsalam",
   "short_name": "Mohammed Abdalsalam",
-  "title": "PhD Candidate in Information and Communication Technology",
+  "title": "PhD Student",
   "affiliation": "Gdańsk University of Technology",
   "department": "Faculty of Electronics, Telecommunications and Informatics",
   "location": "Gdańsk, Poland",
@@ -24,10 +24,10 @@
   ],
   "education": [
     {
-      "degree": "PhD in Information and Communication Technology",
-      "institution": "Gdańsk University of Technology",
-      "place": "Gdańsk, Poland",
-      "period": "Oct 2024 – present",
+      "degree": "PhD Student, Information and Communication Technology",
+      "institution": "",
+      "place": "",
+      "period": "Current",
       "note": "Dissertation: Multi-objective Weather Routing Optimization Based on AI Techniques and Parallel Acceleration Technologies. Supervisors: dr hab. inż. Joanna Szłapczyńska (ship routing, multi-objective optimisation) and dr hab. inż. Paweł Czarnul (high-performance computing)."
     },
     {
@@ -82,8 +82,8 @@
     }
   ],
   "scholarships": [
-    "Polonium International Doctoral Fellowship — Gdańsk University of Technology, Excellence Initiative – Research University (IDUB)",
-    "NAWA PROM scholarship — international scholarship exchange of doctoral students, Gdańsk University of Technology",
+    "Polonium International Doctoral Fellowship — Excellence Initiative – Research University (IDUB)",
+    "NAWA PROM scholarship — international scholarship exchange of doctoral students",
     "Erasmus+ mobility participant"
   ],
   "presentations": [
@@ -152,8 +152,8 @@
   "employer_place": "Sudan",
   "employer_role": "University Lecturer",
   "doctoral": {
-    "institution": "Gdańsk University of Technology",
-    "period": "Oct 2024 – present",
+    "institution": "",
+    "period": "",
     "points": [
       "Parallel multi-objective evolutionary algorithms (NSGA-II, SPEA2, MOEA/D) with OpenMP, CUDA and hybrid CPU–GPU execution for ship weather routing.",
       "Machine-learning surrogate models of the S175 ship-performance simulator within the ERA-NET MarTERA ROUTING project.",
