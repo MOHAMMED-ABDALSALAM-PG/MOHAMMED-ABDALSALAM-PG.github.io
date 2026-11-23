@@ -142,10 +142,27 @@ def chart_pubs_by_year(pubs, chart_id="chart-years"):
     for p in pubs:
         counts[p["year"]][p["topic"]] += 1
     maxv = max(sum(c.values()) for c in counts.values())
-    W, H, ml, mr, mt, mb = 640, 260, 34, 8, 14, 30
+    svgs = "".join(_years_svg(years, counts, maxv, len(pubs), W, cls) for W, cls in ((640, "wide"), (340, "narrow")))
+    legend = "".join(f'<li><span class="sw s{TOPIC_SLOT[t]}"></span>{e(TOPICS[t])}</li>' for t in TOPIC_ORDER)
+    rows = "".join(
+        f"<tr><th scope='row'>{y}</th>" + "".join(f"<td>{counts[y][t]}</td>" for t in TOPIC_ORDER) + f"<td>{sum(counts[y].values())}</td></tr>"
+        for y in years)
+    head = "".join(f"<th scope='col'>{e(TOPICS[t])}</th>" for t in TOPIC_ORDER)
+    return f"""<figure class="chart" id="{chart_id}">
+  <figcaption><span class="chart-title">Published papers per year, by research area</span>
+  <span class="chart-sub">Peer-reviewed journal articles and conference papers (n = {len(pubs)}); accepted papers excluded. Years without papers shown as empty.</span></figcaption>
+  <ul class="legend">{legend}</ul>
+  {svgs}
+  <details class="table-view"><summary>Show data table</summary><table><thead><tr><th scope="col">Year</th>{head}<th scope="col">Total</th></tr></thead><tbody>{rows}</tbody></table></details>
+  <p class="chart-source">Source: publication dataset on this site, verified against Crossref and ORCID ({e(PUBS['as_of'])}).</p>
+</figure>"""
+
+
+def _years_svg(years, counts, maxv, n, W, cls):
+    H, ml, mr, mt, mb = (260, 34, 8, 14, 30) if cls == "wide" else (220, 26, 4, 14, 30)
     pw, ph = W - ml - mr, H - mt - mb
     step = pw / len(years)
-    bw = min(44, step * 0.56)
+    bw = min(44, step * 0.6)
     ymax = maxv + (1 if maxv < 5 else 0)
     sy = lambda v: mt + ph - v / ymax * ph
     g = []
@@ -171,19 +188,7 @@ def chart_pubs_by_year(pubs, chart_id="chart-years"):
         if total:
             bars.append(f'<text class="val" x="{x + bw / 2:.1f}" y="{sy(total) - 6:.1f}" text-anchor="middle">{total}</text>')
         bars.append(f'<text class="tick" x="{x + bw / 2:.1f}" y="{H - 10}" text-anchor="middle">{yr}</text>')
-    legend = "".join(f'<li><span class="sw s{TOPIC_SLOT[t]}"></span>{e(TOPICS[t])}</li>' for t in TOPIC_ORDER)
-    rows = "".join(
-        f"<tr><th scope='row'>{y}</th>" + "".join(f"<td>{counts[y][t]}</td>" for t in TOPIC_ORDER) + f"<td>{sum(counts[y].values())}</td></tr>"
-        for y in years)
-    head = "".join(f"<th scope='col'>{e(TOPICS[t])}</th>" for t in TOPIC_ORDER)
-    return f"""<figure class="chart" id="{chart_id}">
-  <figcaption><span class="chart-title">Published papers per year, by research area</span>
-  <span class="chart-sub">Peer-reviewed journal articles and conference papers (n = {len(pubs)}); accepted papers excluded. Years without papers shown as empty.</span></figcaption>
-  <ul class="legend">{legend}</ul>
-  <svg viewBox="0 0 {W} {H}" role="img" aria-label="Stacked bar chart of published papers per year from {years[0]} to {years[-1]}, total {len(pubs)}">{''.join(g)}<line class="axis" x1="{ml}" x2="{W - mr}" y1="{sy(0):.1f}" y2="{sy(0):.1f}"/>{''.join(bars)}</svg>
-  <details class="table-view"><summary>Show data table</summary><table><thead><tr><th scope="col">Year</th>{head}<th scope="col">Total</th></tr></thead><tbody>{rows}</tbody></table></details>
-  <p class="chart-source">Source: publication dataset on this site, verified against Crossref and ORCID ({e(PUBS['as_of'])}).</p>
-</figure>"""
+    return f'<svg class="{cls}" viewBox="0 0 {W} {H}" role="img" aria-label="Stacked bar chart of published papers per year from {years[0]} to {years[-1]}, total {n}">{"".join(g)}<line class="axis" x1="{ml}" x2="{W - mr}" y1="{sy(0):.1f}" y2="{sy(0):.1f}"/>{"".join(bars)}</svg>'
 
 
 def rounded_top_rect(x, y, w, h, r):
@@ -199,33 +204,37 @@ def chart_topics(pubs, accepted):
     acc = {t: sum(1 for p in accepted if p["topic"] == t) for t in TOPIC_ORDER}
     first = {t: sum(1 for p in pubs if p["topic"] == t and p["role"] == "first-author") for t in TOPIC_ORDER}
     order = sorted(TOPIC_ORDER, key=lambda t: -counts[t])
-    W, rowh, ml, mr = 640, 46, 210, 70
-    H = rowh * len(order) + 10
     maxv = max(counts[t] + acc[t] for t in order)
-    sx = lambda v: v / maxv * (W - ml - mr)
-    parts = []
-    for i, t in enumerate(order):
-        y = 8 + i * rowh
-        bh = 20
-        w = sx(counts[t])
-        tip = f"{TOPICS[t]}: {counts[t]} published ({first[t]} first-author)"
-        parts.append(f'<text class="cat" x="{ml - 12}" y="{y + 15}" text-anchor="end">{e(TOPICS[t])}</text>')
-        parts.append(f'<path class="mark s{TOPIC_SLOT[t]}" d="{rounded_right_rect(ml, y, w, bh, 4)}" tabindex="0" data-tip="{e(tip)}"><title>{e(tip)}</title></path>')
-        label = f"{counts[t]}"
-        if acc[t]:
-            aw = sx(acc[t])
-            atip = f"{TOPICS[t]}: {acc[t]} accepted, not yet published"
-            parts.append(f'<path class="mark accepted s{TOPIC_SLOT[t]}" d="{rounded_right_rect(ml + w + 2, y, aw - 2, bh, 4)}" tabindex="0" data-tip="{e(atip)}"><title>{e(atip)}</title></path>')
-            label += f" + {acc[t]} accepted"
-            w += aw
-        parts.append(f'<text class="val" x="{ml + w + 8:.1f}" y="{y + 15}">{label}</text>')
+
+    def svg(W, cls):
+        rowh, mr = 50, (150 if cls == "wide" else 120)
+        H = rowh * len(order) + 4
+        sx = lambda v: v / maxv * (W - mr)
+        parts = []
+        for i, t in enumerate(order):
+            y = 4 + i * rowh
+            parts.append(f'<text class="cat" x="0" y="{y + 13}">{e(TOPICS[t])}</text>')
+            by, bh = y + 20, 18
+            w = sx(counts[t])
+            tip = f"{TOPICS[t]}: {counts[t]} published ({first[t]} first-author)"
+            parts.append(f'<path class="mark s{TOPIC_SLOT[t]}" d="{rounded_right_rect(0, by, w, bh, 4)}" tabindex="0" data-tip="{e(tip)}"><title>{e(tip)}</title></path>')
+            label = f"{counts[t]}"
+            if acc[t]:
+                aw = sx(acc[t])
+                atip = f"{TOPICS[t]}: {acc[t]} accepted, not yet published"
+                parts.append(f'<path class="mark accepted s{TOPIC_SLOT[t]}" d="{rounded_right_rect(w + 2, by, aw - 2, bh, 4)}" tabindex="0" data-tip="{e(atip)}"><title>{e(atip)}</title></path>')
+                label += f" + {acc[t]} accepted"
+                w += aw
+            parts.append(f'<text class="val" x="{w + 8:.1f}" y="{by + 14}">{label}</text>')
+        return (f'<svg class="{cls}" viewBox="0 0 {W} {H}" role="img" aria-label="Horizontal bar chart of papers by research area">'
+                f'<defs><pattern id="hatch-{cls}" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--surface)"/><line x1="0" y1="0" x2="0" y2="6" stroke="currentColor" stroke-width="3"/></pattern></defs>'
+                f'{"".join(parts).replace("class=\"mark accepted", "fill=\"url(#hatch-" + cls + ")\" class=\"mark accepted")}</svg>')
+
     rows = "".join(f"<tr><th scope='row'>{e(TOPICS[t])}</th><td>{counts[t]}</td><td>{first[t]}</td><td>{acc[t]}</td></tr>" for t in order)
     return f"""<figure class="chart" id="chart-topics">
   <figcaption><span class="chart-title">Papers by research area</span>
   <span class="chart-sub">Each paper is assigned to one area by its main application domain. Solid bars: published; hatched: accepted, not yet published.</span></figcaption>
-  <svg viewBox="0 0 {W} {H}" role="img" aria-label="Horizontal bar chart of papers by research area">
-  <defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--surface)"/><line x1="0" y1="0" x2="0" y2="6" stroke="currentColor" stroke-width="3"/></pattern></defs>
-  {''.join(parts)}</svg>
+  {svg(640, "wide")}{svg(340, "narrow")}
   <details class="table-view"><summary>Show data table</summary><table><thead><tr><th scope="col">Area</th><th scope="col">Published</th><th scope="col">of which first-author</th><th scope="col">Accepted</th></tr></thead><tbody>{rows}</tbody></table></details>
 </figure>"""
 
@@ -240,32 +249,37 @@ def rounded_right_rect(x, y, w, h, r):
 
 def chart_s175():
     d = PROJ["s175_speed"]
-    W, ml, mr, rowh = 640, 170, 90, 64
     rows = d["rows"]
-    H = rowh * len(rows) + 46
     lo, hi = -3, 2  # 1 ms .. 100 s
-    sx = lambda v: ml + (math.log10(v) - lo) / (hi - lo) * (W - ml - mr)
-    parts = []
-    for k in range(lo, hi + 1):
-        x = sx(10 ** k)
-        lab = {-3: "1 ms", -2: "10 ms", -1: "0.1 s", 0: "1 s", 1: "10 s", 2: "100 s"}[k]
-        parts.append(f'<line class="grid" x1="{x:.1f}" x2="{x:.1f}" y1="6" y2="{H - 30}"/><text class="tick" x="{x:.1f}" y="{H - 12}" text-anchor="middle">{lab}</text>')
-    for i, r in enumerate(rows):
-        y = 10 + i * rowh
-        parts.append(f'<text class="cat" x="{ml - 12}" y="{y + 26}" text-anchor="end">{e(r["case"])}</text>')
-        for j, (key, cls, name) in enumerate([("simulator_s", "s1", "Physical simulator (CPU)"), ("surrogate_s", "s3", "ML surrogate (GPU)")]):
-            v = r[key]
-            yy = y + j * 22
-            w = sx(v) - ml
-            fmt = f"{v:g} s" if v >= 1 else f"{v * 1000:.2f} ms"
-            tip = f"{r['case']} · {name}: {fmt}"
-            parts.append(f'<path class="mark {cls}" d="{rounded_right_rect(ml, yy, w, 18, 4)}" tabindex="0" data-tip="{e(tip)}"><title>{e(tip)}</title></path>')
-            parts.append(f'<text class="val" x="{ml + w + 6:.1f}" y="{yy + 13}">{fmt}{"  (" + r["ratio"] + " faster)" if j == 1 else ""}</text>')
+
+    def svg(W, cls):
+        mr, rowh = (90, 82) if cls == "wide" else (70, 82)
+        H = rowh * len(rows) + 30
+        sx = lambda v: (math.log10(v) - lo) / (hi - lo) * (W - mr)
+        parts = []
+        for kk in range(lo, hi + 1):
+            x = sx(10 ** kk)
+            lab = {-3: "1 ms", -2: "10 ms", -1: "0.1 s", 0: "1 s", 1: "10 s", 2: "100 s"}[kk]
+            anchor = "start" if kk == lo else "middle"
+            parts.append(f'<line class="grid" x1="{x:.1f}" x2="{x:.1f}" y1="4" y2="{H - 26}"/><text class="tick" x="{x:.1f}" y="{H - 8}" text-anchor="{anchor}">{lab}</text>')
+        for i, r in enumerate(rows):
+            y = 4 + i * rowh
+            parts.append(f'<text class="cat" x="0" y="{y + 13}">{e(r["case"])} · {e(r["ratio"])} faster</text>')
+            for j, (key, cls2, name) in enumerate([("simulator_s", "s1", "Physical simulator (CPU)"), ("surrogate_s", "s3", "ML surrogate (GPU)")]):
+                v = r[key]
+                yy = y + 20 + j * 24
+                w = max(sx(v), 3)
+                fmt = f"{v:g} s" if v >= 1 else f"{v * 1000:.2f} ms"
+                tip = f"{r['case']} · {name}: {fmt}"
+                parts.append(f'<path class="mark {cls2}" d="{rounded_right_rect(0, yy, w, 18, 4)}" tabindex="0" data-tip="{e(tip)}"><title>{e(tip)}</title></path>')
+                parts.append(f'<text class="val" x="{w + 6:.1f}" y="{yy + 13}">{fmt}</text>')
+        return f'<svg class="{cls}" viewBox="0 0 {W} {H}" role="img" aria-label="Log-scale bar chart comparing simulator and surrogate evaluation time">{"".join(parts)}</svg>'
+
     trs = "".join(f"<tr><th scope='row'>{e(r['case'])}</th><td>{r['simulator_s']} s</td><td>{r['surrogate_s'] * 1000:.2f} ms</td><td>{r['ratio']}</td></tr>" for r in rows)
     return f"""<figure class="chart" id="chart-s175">
   <figcaption><span class="chart-title">{e(d['title'])}</span><span class="chart-sub">Wall-clock time per call, logarithmic axis. Measured result reported in the public repository.</span></figcaption>
   <ul class="legend"><li><span class="sw s1"></span>Physical simulator (CPU)</li><li><span class="sw s3"></span>ML surrogate (GPU)</li></ul>
-  <svg viewBox="0 0 {W} {H}" role="img" aria-label="Log-scale bar chart comparing simulator and surrogate evaluation time">{''.join(parts)}</svg>
+  {svg(640, "wide")}{svg(340, "narrow")}
   <details class="table-view"><summary>Show data table</summary><table><thead><tr><th scope="col">Case</th><th scope="col">Simulator</th><th scope="col">Surrogate</th><th scope="col">Speed-up</th></tr></thead><tbody>{trs}</tbody></table></details>
   <p class="chart-source">Source: {e(d['source'])}</p>
 </figure>"""
@@ -347,6 +361,7 @@ def diagram(kind):
 <path class="flow" d="M554 102H578" marker-end="url(#ar3)"/>
 </g></svg>"""
         cap = "Conceptual diagram (not experimental data): rule-based weak supervision and LLM labels are combined, checked on a human-reviewed sample, and used to train and explain classifiers; model selection uses validation data only."
+    svg = svg.replace("<svg ", '<svg class="wide-fig" ', 1) + figures.hs_narrow()
     return f'<figure class="diagram">{svg}<figcaption>{e(cap)}</figcaption></figure>'
 
 
@@ -390,6 +405,14 @@ def pub_card(p, compact=False):
 </article>"""
 
 
+REPO_FIG = {
+    "MOHAMMED-ABDALSALAM-PG/PMOO-V1": "pmoo", "MOHAMMED-ABDALSALAM-PG/S175-ML-surrogate": "s175",
+    "MOHAMMED-ABDALSALAM-PG/SWR-HPC-systematic-review": "swr", "scander91/sudanese-hate-speech-detection": "hate",
+    "scander91/arabic-dialect-BERT-LLM": "dialect", "scander91/MSF-CBERT": "fusion",
+    "scander91/Intelligent-Fusion-of-Heterogeneous-Data-for-Terrorist-Organization": "fusion",
+}
+
+
 def project_card(p, accepted_by_id):
     gh = GH.get("repos", {}).get(p["repo"])
     url = gh["html_url"] if gh else f"https://github.com/{p['repo']}"
@@ -409,6 +432,7 @@ def project_card(p, accepted_by_id):
   <div class="proj-head"><span class="tag t{TOPIC_SLOT[p['area']]}">{e(TOPICS[p['area']])}</span><span class="tag status">{e(p['status'])}</span></div>
   <h3><a href="{e(url)}" rel="noopener">{e(p['name'])}</a></h3>
   <p class="repo-name">{icon('github', 14)} {e(p['repo'])}{lic}</p>
+  {('<div class="sw-fig proj-fig">' + figures.card_figure(REPO_FIG[p['repo']]) + '</div>') if p['repo'] in REPO_FIG else ''}
   <p>{e(p['description'])}</p>
   <p class="contrib">{e(p['contribution'])}</p>
   {paper}
@@ -426,7 +450,7 @@ def sidebar():
     return f"""<aside class="side" aria-label="Profile">
   <div class="side-id">
     <a href="/" class="side-photo" tabindex="-1" aria-hidden="true"><picture>
-      <source type="image/webp" srcset="/assets/img/portrait-320.webp 320w, /assets/img/portrait-640.webp 640w" sizes="168px">
+      <source type="image/webp" srcset="/assets/img/portrait-320.webp 320w, /assets/img/portrait-640.webp 640w" sizes="180px">
       <img src="/assets/img/portrait-640.jpg" width="640" height="640" alt="">
     </picture></a>
     <div>
@@ -725,7 +749,7 @@ def projects():
 <section class="wrap" aria-labelledby="res-h"><h2 id="res-h" class="block-h">Datasets &amp; models</h2>
 <p class="muted section-note">Resources I created for Sudanese Arabic NLP. Availability is stated exactly. Texts collected from social media are shared as identifiers and labels only.</p>
 <div class="res-grid">{''.join(res)}</div></section>
-<section class="wrap charts-row">{chart_s175()}{chart_recency()}</section>
+<section class="wrap charts-row">{chart_s175()}</section>
 <section class="wrap"><h2 class="block-h">More research code</h2><div class="proj-grid">{other_cards}</div></section>"""
     return page("/projects/", "Software & Data", "Research software, datasets and models by Mohammed Abdalsalam: parallel multi-objective optimisation, ship-performance surrogates, and Sudanese Arabic NLP resources.", body)
 

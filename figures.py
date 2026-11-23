@@ -188,7 +188,7 @@ def surrogate_scene():
     cap = ("Illustration. The optimiser needs ship performance millions of times; a neural surrogate trained on 126 million simulator "
            "runs answers about 3,000–5,000× faster, and separate classifiers flag operating points the simulator cannot evaluate. "
            "Timings from the public S175-ML-surrogate repository.")
-    return fig(svg, cap, "narrow")
+    return fig(svg.replace("<svg ", '<svg class="wide-fig" ', 1) + (surrogate_narrow() if "f-sur-t" in svg else filo2_narrow()), cap, "narrow")
 
 
 # ---------------------------------------------------------------- FILO2 x PMOO collaboration
@@ -228,7 +228,7 @@ def filo2_scene():
 </g></svg>"""
     cap = ('Illustration of the idea. FILO2 is the open-source heuristic for very large vehicle-routing problems by L. Accorsi and D. Vigo '
            '(<a href="https://doi.org/10.1016/j.cor.2024.106562">Computers &amp; Operations Research, 2024</a>). Ongoing work; no results are reported here.')
-    return fig(svg, cap, "narrow")
+    return fig(svg.replace("<svg ", '<svg class="wide-fig" ', 1) + (surrogate_narrow() if "f-sur-t" in svg else filo2_narrow()), cap, "narrow")
 
 
 # ---------------------------------------------------------------- small card figures (software cards)
@@ -267,8 +267,8 @@ def card_figure(kind):
                 '<path class="flow" d="M110 55 h16" marker-end="url(#arC)"/>'
                 '<rect class="box" x="130" y="18" width="80" height="32" rx="8"/><text class="mono" x="170" y="38" text-anchor="middle">feasible?</text>'
                 '<rect class="box accent" x="130" y="60" width="80" height="32" rx="8"/><text class="mono" x="170" y="80" text-anchor="middle">regressor</text>'
-                '<path class="flow" d="M214 55 h16" marker-end="url(#arC)"/>'
-                '<rect class="box" x="234" y="30" width="76" height="50" rx="8"/><text class="mono" x="272" y="52" text-anchor="middle">speed</text><text class="mono" x="272" y="68" text-anchor="middle">fuel · motion</text>'
+                '<path class="flow" d="M212 55 h10" marker-end="url(#arC)"/>'
+                '<rect class="box" x="226" y="26" width="88" height="58" rx="8"/><text class="mono" x="270" y="46" text-anchor="middle">speed</text><text class="mono" x="270" y="60" text-anchor="middle">fuel</text><text class="mono" x="270" y="74" text-anchor="middle">motions</text>'
                 '<text class="mono dim" x="160" y="132" text-anchor="middle">simulator ≈ 9–14 s → surrogate ≈ 3 ms</text>')
     elif kind == "swr":
         bars = [(1.0, "search"), (0.74, "deduplicate"), (0.52, "screen"), (0.34, "include")]
@@ -283,9 +283,9 @@ def card_figure(kind):
                       sub=["Telegram", "dedupe", "native review", "explain"])
         body += '<text class="mono dim" x="160" y="140" text-anchor="middle">Sudanese Arabic · harmful-language detection</text>'
     elif kind == "dialect":
-        body = ('<rect class="box" x="12" y="44" width="70" height="44" rx="8"/><text class="mono" x="47" y="70" text-anchor="middle">Arabic text</text>'
+        body = ('<rect class="box" x="8" y="44" width="76" height="44" rx="8"/><text class="mono" x="46" y="62" text-anchor="middle">Arabic</text><text class="mono" x="46" y="76" text-anchor="middle">text</text>'
                 '<path class="flow" d="M84 60 C100 60 100 36 116 36" marker-end="url(#arC)"/><path class="flow" d="M84 72 C100 72 100 96 116 96" marker-end="url(#arC)"/>'
-                '<rect class="box accent" x="120" y="16" width="96" height="40" rx="8"/><text class="mono" x="168" y="40" text-anchor="middle">fine-tuned BERT</text>'
+                '<rect class="box accent" x="120" y="16" width="96" height="40" rx="8"/><text class="mono" x="168" y="40" text-anchor="middle">BERT (tuned)</text>'
                 '<rect class="box" x="120" y="76" width="96" height="40" rx="8"/><text class="mono" x="168" y="100" text-anchor="middle">LLM 0/few-shot</text>'
                 '<path class="flow" d="M218 36 C234 36 234 60 248 60" marker-end="url(#arC)"/><path class="flow" d="M218 96 C234 96 234 72 248 72" marker-end="url(#arC)"/>'
                 '<rect class="box" x="252" y="40" width="58" height="52" rx="8"/><text class="mono" x="281" y="62" text-anchor="middle">dialect</text><text class="mono" x="281" y="78" text-anchor="middle">label</text>'
@@ -397,3 +397,78 @@ def s175_race():
   <div class="race-row"><span class="race-name">Neural surrogate</span><div class="race-bar"><i id="race-sur-bar" class="fast"></i></div><b id="race-sur">0</b><span class="race-u">evaluations</span></div>
   <p class="mono-line dim">One case from the public S175-ML-surrogate repository: 8.94 s per simulator call vs 2.65 ms per surrogate call (×3,378). Shown in real time.</p>
 </div>"""
+
+
+# ---------------------------------------------------------------- upright phone versions of the wide concept figures
+def surrogate_narrow():
+    return f"""<svg class="narrow-fig" viewBox="0 0 340 470" role="img" aria-labelledby="f-surn-t"><title id="f-surn-t">Illustration: the slow ship simulator is replaced by a fast neural surrogate inside the optimiser</title>{ARROW.format(id="arSn")}
+<g class="dg">
+<rect class="sea" x="20" y="8" width="300" height="96" rx="12"/>
+{ship(104, 76, 1.25)}{waves(20, 84, 300)}{waves(32, 96, 270, "wave faint")}
+<text class="note" x="170" y="126" text-anchor="middle">speed, heading, waves, wind, draft …</text>
+<path class="flow" d="M170 134 V154" marker-end="url(#arSn)"/>
+<rect class="box" x="20" y="158" width="300" height="78" rx="12"/>
+<g class="hourglass" transform="translate(40 172)"><path d="M0 0 H26 M0 48 H26 M3 0 C3 18 23 22 23 24 C23 26 3 30 3 48 M23 0 C23 18 3 22 3 24 C3 26 23 30 23 48"/><path class="sand" d="M8 44 H18 L13 34 Z"/></g>
+<text class="lbl" x="84" y="186">Physics simulator</text><text class="note" x="84" y="208">accurate but slow:</text><text class="note" x="84" y="226">about 9–14 s per call</text>
+<text class="note" x="170" y="258" text-anchor="middle">replaced inside the optimiser by</text>
+<rect class="box accent" x="20" y="270" width="300" height="78" rx="12"/>
+<g class="nn big" transform="translate(32 286)"><circle cx="6" cy="8" r="5"/><circle cx="6" cy="40" r="5"/><circle cx="28" cy="4" r="5"/><circle cx="28" cy="24" r="5"/><circle cx="28" cy="44" r="5"/><circle cx="50" cy="24" r="5"/>
+<path d="M11 8 L23 4 M11 8 L23 24 M11 8 L23 44 M11 40 L23 4 M11 40 L23 24 M11 40 L23 44 M33 4 L45 24 M33 24 L45 24 M33 44 L45 24"/></g>
+<text class="lbl" x="98" y="298">Neural surrogate</text><text class="note" x="98" y="320">learned from 126 M runs:</text><text class="note" x="98" y="338">≈ 3 ms per call</text>
+<path class="flow" d="M170 352 V376" marker-end="url(#arSn)"/>
+<rect class="box" x="20" y="380" width="300" height="52" rx="10"/>
+<text class="lbl" x="170" y="403" text-anchor="middle">speed · fuel · motions</text><text class="note" x="170" y="422" text-anchor="middle">+ feasibility flags</text>
+</g></svg>"""
+
+
+def filo2_narrow():
+    depot = (170, 120)
+    routes = {"r1": [(110, 50), (160, 30), (215, 48)], "r2": [(250, 90), (268, 140), (240, 185)],
+              "r3": [(175, 205), (110, 200), (80, 160)], "r4": [(70, 110), (82, 70)]}
+    paths, pts = "", ""
+    for cls, cs in routes.items():
+        seq = [depot] + cs + [depot]
+        paths += f'<path class="route thin {cls}" d="M' + " L".join(f"{x} {y}" for x, y in seq) + '"/>'
+        pts += "".join(f'<circle class="cust" cx="{x}" cy="{y}" r="5"/>' for x, y in cs)
+    return f"""<svg class="narrow-fig" viewBox="0 0 340 560" role="img" aria-labelledby="f-filon-t"><title id="f-filon-t">Illustration: vehicle routes from a depot, and FILO2 working inside the PMOO multi-objective loop</title>{ARROW.format(id="arFn")}
+<g class="dg">
+<rect class="panel" x="10" y="8" width="320" height="230" rx="14"/>
+{paths}{pts}<rect class="depot" x="{depot[0] - 10}" y="{depot[1] - 10}" width="20" height="20" rx="3"/>
+<text class="lbl" x="{depot[0] + 16}" y="{depot[1] + 5}">depot</text>
+<text class="note" x="170" y="228" text-anchor="middle">thousands of customers, many vehicles</text>
+<path class="flow" d="M170 242 V262" marker-end="url(#arFn)"/>
+<rect class="box" x="30" y="266" width="280" height="70" rx="12"/>
+<text class="lbl" x="170" y="292" text-anchor="middle">PMOO</text>
+<text class="note" x="170" y="314" text-anchor="middle">NSGA-II · SPEA2 · MOEA/D</text><text class="note" x="170" y="330" text-anchor="middle">keep a population of plans</text>
+<rect class="box accent" x="30" y="380" width="280" height="70" rx="12"/>
+<text class="lbl" x="170" y="406" text-anchor="middle">FILO2 engine</text>
+<text class="note" x="170" y="428" text-anchor="middle">fast local search for very</text><text class="note" x="170" y="444" text-anchor="middle">large routing problems</text>
+<path class="flow" d="M110 338 V378" marker-end="url(#arFn)"/><path class="flow" d="M230 378 V338" marker-end="url(#arFn)"/>
+<text class="note" x="102" y="364" text-anchor="end">improve</text><text class="note" x="238" y="364">return</text>
+<path class="flow" d="M170 452 V478" marker-end="url(#arFn)"/>
+<rect class="box" x="30" y="482" width="280" height="44" rx="12"/>
+<text class="lbl" x="170" y="509" text-anchor="middle">a set of trade-off route plans</text>
+</g></svg>"""
+
+
+def hs_narrow():
+    def box(x, y, w, h, l1, l2="", acc=False):
+        t = f'<rect class="box{" accent" if acc else ""}" x="{x}" y="{y}" width="{w}" height="{h}" rx="10"/>'
+        if l2:
+            t += f'<text x="{x + w / 2}" y="{y + h / 2 - 3}" text-anchor="middle">{l1}</text><text class="sm" x="{x + w / 2}" y="{y + h / 2 + 14}" text-anchor="middle">{l2}</text>'
+        else:
+            t += f'<text x="{x + w / 2}" y="{y + h / 2 + 5}" text-anchor="middle">{l1}</text>'
+        return t
+    return f"""<svg class="narrow-fig" viewBox="0 0 340 416" role="img" aria-labelledby="dg-hsn-t"><title id="dg-hsn-t">Hybrid annotation and modelling pipeline for Sudanese Arabic harmful-language detection</title>{ARROW.format(id="arHn")}
+<g class="dg">
+{box(60, 8, 220, 48, "Telegram &amp; Twitter text")}
+<path class="flow" d="M170 58 V78" marker-end="url(#arHn)"/>
+{box(60, 82, 220, 48, "Normalise &amp; de-duplicate")}
+<path class="flow" d="M150 132 C150 146 90 142 90 160" marker-end="url(#arHn)"/><path class="flow" d="M190 132 C190 146 250 142 250 160" marker-end="url(#arHn)"/>
+{box(10, 164, 155, 60, "Weak supervision", "Sudanese rules", True)}
+{box(175, 164, 155, 60, "LLM annotation", "+ native-speaker review", True)}
+<path class="flow" d="M90 226 C90 246 150 240 150 258" marker-end="url(#arHn)"/><path class="flow" d="M250 226 C250 246 190 240 190 258" marker-end="url(#arHn)"/>
+{box(60, 262, 220, 48, "Aggregated labels")}
+<path class="flow" d="M170 312 V332" marker-end="url(#arHn)"/>
+{box(40, 336, 260, 72, "Models", "transformers, ensembles, SHAP / LIME")}
+</g></svg>"""

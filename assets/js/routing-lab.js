@@ -105,7 +105,7 @@
   var done = el("path", { class: "lab-done" }, svg);
   [A, B].forEach(function (p, i) {
     el("circle", { cx: p.x, cy: p.y, r: 7, class: "lab-port" }, svg);
-    var t = el("text", { x: i ? 566 : 40, y: i ? 36 : 272, "text-anchor": "middle", class: "lab-mono strong" }, svg);
+    var t = el("text", { x: i ? 590 : 10, y: i ? 36 : 290, "text-anchor": i ? "end" : "start", class: "lab-mono strong" }, svg);
     t.textContent = i ? "PORT B" : "PORT A";
   });
   var shipG = el("g", { class: "lab-ship" }, svg);
