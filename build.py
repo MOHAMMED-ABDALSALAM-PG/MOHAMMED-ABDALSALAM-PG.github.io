@@ -538,7 +538,7 @@ def home():
 
     rec = [
         ("Appointment", "University Lecturer", "University of the Holy Quran and Islamic Sciences, Sudan · Nov 2016–present"),
-        ("Ph.D.", "PhD Student", "Information and Communication Technology"),
+        ("Ph.D.", "PhD Student", ""),
         ("Research", "Research Assistant", "Wuhan University of Technology & Sudan University of Science and Technology · 2018–2024"),
         ("M.Sc.", "Information Technology (First Class)", "University of Madras, India · 2015"),
         ("B.Sc.", "Information Technology", "Al-Zaeim Al-Azhari University, Sudan · 2012"),
@@ -546,7 +546,7 @@ def home():
         ("Talks", "TransNav 2025 · AICS 2019", "Gdynia, Poland · Hubei, China"),
         ("Teaching", "Lecturer in computer science since 2015", "Cambridge International College and other Sudanese colleges · 2015–2019"),
     ]
-    rec_html = "".join(f'<li><span class="lbl">{e(a)}</span><div><h3>{e(b)}</h3><p>{e(c)}</p></div></li>' for a, b, c in rec)
+    rec_html = "".join(f'<li><span class="lbl">{e(a)}</span><div><h3>{e(b)}</h3>{("<p>" + e(c) + "</p>") if c else ""}</div></li>' for a, b, c in rec)
 
     body = f"""
 <section class="intro-block">
