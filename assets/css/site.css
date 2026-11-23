@@ -166,17 +166,25 @@ main { min-width: 0; padding-bottom: 2rem; }
 .lab-tab .n { font: .68rem var(--mono); color: var(--muted); margin-right: .3rem; }
 .lab-tab[aria-pressed="true"], .lab-pref[aria-pressed="true"] { border-color: var(--series-3); color: var(--ink); background: color-mix(in srgb, var(--series-3) 16%, var(--card)); }
 .lab-map { display: block; width: 100%; height: auto; border-radius: 10px; }
-.lab-sea { fill: color-mix(in srgb, var(--series-1) 9%, var(--surface)); }
-.lab-land { fill: color-mix(in srgb, var(--series-4) 18%, var(--surface-2)); stroke: color-mix(in srgb, var(--series-4) 40%, var(--line)); }
-.lab-storm { fill: var(--series-2); fill-opacity: .1; stroke: var(--series-2); stroke-opacity: .5; stroke-dasharray: 4 4; transition: r .3s; }
-.lab-cand { fill: none; stroke: var(--muted); stroke-opacity: .25; stroke-width: 1.2; }
-.lab-cand.on { stroke: var(--accent); stroke-opacity: .55; stroke-width: 1.5; stroke-dasharray: 3 4; }
-.lab-route { fill: none; stroke: var(--series-3); stroke-width: 3.5; stroke-linecap: round; }
-.lab-port { fill: var(--ink); stroke: var(--card); stroke-width: 3; }
+.lab-map .sea-a { stop-color: #1f78a8; } .lab-map .sea-b { stop-color: #0b4468; }
+.lab-wavepat { fill: none; stroke: #ffffff; stroke-opacity: .13; stroke-width: 1.3; stroke-linecap: round; }
+.lab-land { fill: #c9b27a; stroke: #e6d6a6; stroke-width: 2; }
+.lab-storm { fill: #3a3f4a; fill-opacity: .22; stroke: #ff9a6b; stroke-opacity: .7; stroke-dasharray: 4 4; transition: r .3s; }
+.lab-cand { fill: none; stroke: #ffffff; stroke-opacity: .16; stroke-width: 1.2; }
+.lab-cand.on { stroke: #bdeff3; stroke-opacity: .6; stroke-width: 1.5; stroke-dasharray: 3 4; }
+.lab-route { fill: none; stroke: #ffd166; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 2 6; }
+.lab-done { fill: none; stroke: #ffd166; stroke-width: 3.5; stroke-linecap: round; }
+.lab-port { fill: #0f1720; stroke: #ffffff; stroke-width: 3; }
 .lab-mono { font: 600 11px var(--mono); fill: var(--muted); letter-spacing: .08em; }
-.lab-mono.strong { fill: var(--ink); }
-.lab-ship path { fill: var(--ink); stroke: var(--card); stroke-width: 1.5; }
-.lab-ship .bridge { fill: var(--series-2); }
+.lab-mono.strong { fill: #0f1720; }
+.lab-map .lab-mono { fill: #ffffff; fill-opacity: .8; }
+.lab-map .lab-mono.strong { fill: #2a2312; fill-opacity: 1; }
+.lab-shiplbl { font: 700 10px var(--mono); fill: #ffffff; letter-spacing: .06em; paint-order: stroke; stroke: #0b4468; stroke-width: 3px; }
+.lab-ship .hull { fill: #1b2733; stroke: #ffffff; stroke-width: 1.2; }
+.lab-ship .bridge { fill: #f4f1ea; }
+.lab-ship .funnel { fill: #e0582b; }
+.lab-ship .box { stroke: #1b2733; stroke-width: .4; }
+.lab-ship .c1 { fill: #3987e5; } .lab-ship .c2 { fill: #e0582b; } .lab-ship .c3 { fill: #1baf7a; } .lab-ship .c4 { fill: #eda100; }
 .lab-prefs { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: .8rem 0; }
 .lab-mono-h { font: .68rem var(--mono); letter-spacing: .1em; color: var(--muted); margin-right: .4rem; }
 .lab-stats { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -192,13 +200,13 @@ main { min-width: 0; padding-bottom: 2rem; }
 .lab-axis { fill: none; stroke: var(--line); stroke-width: 1.5; }
 .lab-pareto .pt { fill: var(--muted); fill-opacity: .45; }
 .lab-pareto .pt.front { fill: var(--accent); fill-opacity: 1; }
-.lab-pareto .pt.sel { fill: none; stroke: var(--series-3); stroke-width: 2.5; }
+.lab-pareto .pt.sel { fill: none; stroke: #e0a400; stroke-width: 2.5; }
 .lab-slider { display: block; }
 .lab-slider b { color: var(--ink); }
 .lab-slider input { width: 100%; accent-color: var(--eyebrow); margin-top: .4rem; }
 .lab-legend { display: flex; flex-wrap: wrap; gap: .4rem 1rem; font-size: .78rem; color: var(--ink-2); margin: .8rem 0 0; }
 .lab-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: .35rem; vertical-align: 0; }
-.lg-front { background: var(--accent); } .lg-dom { background: var(--muted); opacity: .5; } .lg-sel { border: 2px solid var(--series-3); }
+.lg-front { background: var(--accent); } .lg-dom { background: var(--muted); opacity: .5; } .lg-sel { border: 2px solid #e0a400; }
 .dg text.mono { font: 600 10.5px var(--mono); fill: var(--ink-2); }
 .dg text.mono.dim { fill: var(--muted); font-weight: 400; }
 .dg .funnel { fill: color-mix(in srgb, var(--accent) 22%, var(--card)); stroke: var(--accent); stroke-width: 1; }

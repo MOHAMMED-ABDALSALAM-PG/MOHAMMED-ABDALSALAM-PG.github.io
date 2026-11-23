@@ -86,7 +86,13 @@
   host.appendChild(tabs);
 
   var svg = el("svg", { viewBox: "0 0 " + W + " " + H, class: "lab-map", role: "img", "aria-label": "Map with candidate voyages around a storm; the highlighted route is the current choice" }, host);
-  el("rect", { x: 0, y: 0, width: W, height: H, rx: 12, class: "lab-sea" }, svg);
+  var defs = el("defs", {}, svg);
+  var grad = el("linearGradient", { id: "labSeaGrad", x1: 0, y1: 0, x2: 0.4, y2: 1 }, defs);
+  el("stop", { offset: "0", class: "sea-a" }, grad); el("stop", { offset: "1", class: "sea-b" }, grad);
+  var pat = el("pattern", { id: "labWaves", width: 36, height: 22, patternUnits: "userSpaceOnUse" }, defs);
+  el("path", { d: "M2 12 q7 -6 14 0 M20 4 q7 -6 14 0", class: "lab-wavepat" }, pat);
+  el("rect", { x: 0, y: 0, width: W, height: H, rx: 12, fill: "url(#labSeaGrad)" }, svg);
+  el("rect", { x: 0, y: 0, width: W, height: H, rx: 12, fill: "url(#labWaves)" }, svg);
   el("path", { d: "M0 190 C40 186 70 206 84 236 C96 262 84 290 74 300 L0 300 Z", class: "lab-land" }, svg);
   el("path", { d: "M600 0 L600 120 C566 116 530 98 522 66 C516 38 528 14 540 0 Z", class: "lab-land" }, svg);
   var storm = el("g", {}, svg), rings = [];
@@ -96,14 +102,23 @@
     return el("path", { d: "M" + pts.map(function (p) { return p.x.toFixed(1) + " " + p.y.toFixed(1); }).join(" L"), class: "lab-cand" }, candG);
   });
   var chosen = el("path", { class: "lab-route" }, svg);
+  var done = el("path", { class: "lab-done" }, svg);
   [A, B].forEach(function (p, i) {
     el("circle", { cx: p.x, cy: p.y, r: 7, class: "lab-port" }, svg);
-    var t = el("text", { x: p.x + (i ? -10 : 0), y: p.y + (i ? 30 : 30), "text-anchor": "middle", class: "lab-mono strong" }, svg);
+    var t = el("text", { x: i ? 566 : 40, y: i ? 36 : 272, "text-anchor": "middle", class: "lab-mono strong" }, svg);
     t.textContent = i ? "PORT B" : "PORT A";
   });
   var shipG = el("g", { class: "lab-ship" }, svg);
-  el("path", { d: "M-14 -4 L10 -4 L16 0 L10 4 L-14 4 Z" }, shipG);
-  el("rect", { x: -10, y: -3, width: 6, height: 6, class: "bridge" }, shipG);
+  // S175 container ship seen from above, bow pointing +x (about 46 x 13 map units)
+  el("path", { d: "M-24 -5 L-24 5 Q-24 6.5 -22 6.5 L12 6.5 Q20 6.5 24 0 Q20 -6.5 12 -6.5 L-22 -6.5 Q-24 -6.5 -24 -5 Z", class: "hull" }, shipG);
+  var cols = ["c1", "c2", "c3", "c4", "c2", "c1", "c3"];
+  for (var ci = 0; ci < 7; ci++) {
+    el("rect", { x: -14 + ci * 4.4, y: -5, width: 3.8, height: 4.6, class: "box " + cols[ci] }, shipG);
+    el("rect", { x: -14 + ci * 4.4, y: 0.4, width: 3.8, height: 4.6, class: "box " + cols[(ci + 2) % 7] }, shipG);
+  }
+  el("rect", { x: -21.5, y: -5, width: 5.5, height: 10, rx: 1, class: "bridge" }, shipG);
+  el("rect", { x: -20.5, y: -1.2, width: 2.2, height: 2.4, class: "funnel" }, shipG);
+  var shipLbl = el("text", { class: "lab-shiplbl", "text-anchor": "middle" }, svg); shipLbl.textContent = "S175";
 
   var prefs = document.createElement("div"); prefs.className = "lab-prefs"; prefs.setAttribute("role", "group"); prefs.setAttribute("aria-label", "What matters most");
   prefs.innerHTML = '<span class="lab-mono-h">WHAT MATTERS MOST</span>';
@@ -169,6 +184,9 @@
     var x = pts[i].x + (pts[i + 1].x - pts[i].x) * u, y = pts[i].y + (pts[i + 1].y - pts[i].y) * u;
     var ang = Math.atan2(pts[i + 1].y - pts[i].y, pts[i + 1].x - pts[i].x) * 180 / Math.PI;
     shipG.setAttribute("transform", "translate(" + x.toFixed(1) + " " + y.toFixed(1) + ") rotate(" + ang.toFixed(1) + ")");
+    shipLbl.setAttribute("x", x.toFixed(1)); shipLbl.setAttribute("y", (y - 14).toFixed(1));
+    var len = chosen.getTotalLength ? chosen.getTotalLength() : 0;
+    if (len) { done.setAttribute("d", chosen.getAttribute("d")); done.style.strokeDasharray = len; done.style.strokeDashoffset = len * (1 - t); }
   }
   var last = 0;
   function tick(ts) {
