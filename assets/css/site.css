@@ -316,3 +316,87 @@ ul.plain li { margin-bottom: .45rem; }
 
 /* Small screens: let long addresses and URLs wrap instead of widening the page */
 a[href^="mailto:"], .pub-links a, .site-footer a { overflow-wrap: anywhere; }
+
+/* ---------- Illustrated figures (figures.py) ---------- */
+.lede-sm { color: var(--ink-2); margin: -.4rem 0 1.2rem; max-width: 70ch; }
+.story-h { margin-top: 1.5rem; }
+.story { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.6rem; counter-reset: none; }
+.story-step { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem 1.1rem; }
+.story-step:not(:last-child)::after { content: "→"; position: absolute; right: -1.35rem; top: 3.2rem; color: var(--accent); font-weight: 700; font-size: 1.2rem; }
+.story-ic { background: var(--surface-2); border-radius: 10px; padding: .5rem; margin-bottom: .7rem; }
+.story-ic svg { display: block; width: 100%; height: auto; max-height: 110px; }
+.story-step h3 { font-size: 1.02rem; margin: 0 0 .3rem; }
+.story-step p { font-size: .9rem; color: var(--ink-2); margin: 0; }
+@media (max-width: 960px) { .story { grid-template-columns: 1fr 1fr; } .story-step:nth-child(2)::after { content: none; } }
+@media (max-width: 560px) {
+  .story { grid-template-columns: 1fr; gap: 1.4rem; }
+  .story-step { display: grid; grid-template-columns: 96px 1fr; gap: 0 .9rem; align-items: start; }
+  .story-ic { grid-row: span 2; margin: 0; padding: .3rem; }
+  .story-step:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -1.4rem; }
+  .story-step:nth-child(2)::after { content: "↓"; }
+}
+.fig-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 760px) { .fig-pair { grid-template-columns: 1fr; } }
+.diagram.narrow svg { max-width: 640px; display: block; margin: 0 auto; }
+.fig-title { font: 600 1rem var(--serif); margin: 0 0 .6rem; }
+.gen { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; padding: 0; margin: 0 0 1rem; list-style: none; counter-reset: g; }
+.gen li { counter-increment: g; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: .6rem .8rem; font-size: .88rem; color: var(--ink-2); }
+.gen li::before { content: counter(g); display: inline-grid; place-items: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--accent); color: var(--card); font-weight: 700; font-size: .78rem; margin-right: .45rem; }
+.gen b { color: var(--ink); }
+.hw-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; }
+.hw { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: .7rem .8rem .9rem; }
+.hw svg { width: 100%; height: auto; display: block; }
+.hw h4 { margin: .4rem 0 .2rem; font-size: .95rem; color: var(--ink); }
+.hw p { margin: 0; font-size: .85rem; color: var(--ink-2); }
+@media (max-width: 860px) { .hw-grid { grid-template-columns: 1fr 1fr; } .gen { grid-template-columns: 1fr; } }
+.dg text.lbl { fill: var(--ink); font: 600 14px var(--sans); }
+.dg text.note { fill: var(--ink-2); font: 13px var(--sans); }
+.dg text.chiplbl { fill: var(--ink-2); font: 600 12px var(--sans); }
+.dg .sea { fill: color-mix(in srgb, var(--series-1) 11%, var(--card)); }
+.dg .panel { fill: var(--card); stroke: var(--line); }
+.dg .land { fill: color-mix(in srgb, var(--series-4) 20%, var(--card)); stroke: color-mix(in srgb, var(--series-4) 45%, var(--line)); stroke-width: 1.5; }
+.dg .wave { fill: none; stroke: color-mix(in srgb, var(--series-1) 55%, var(--card)); stroke-width: 2; stroke-linecap: round; }
+.dg .wave.faint { stroke: color-mix(in srgb, var(--series-1) 25%, var(--card)); }
+.dg .route { fill: none; stroke-width: 4; stroke-linecap: round; }
+.dg .route.thin { stroke-width: 2.5; stroke-linejoin: round; }
+.dg .r1 { stroke: var(--series-1); } .dg .r2 { stroke: var(--series-3); } .dg .r3 { stroke: var(--series-2); } .dg .r4 { stroke: var(--series-4); }
+.dg .route.r2 { stroke-dasharray: 10 5; } .dg .route.r3 { stroke-dasharray: 2 6; }
+.dg .route.thin.r2, .dg .route.thin.r3 { stroke-dasharray: none; }
+.dg .dot { stroke: var(--card); stroke-width: 2; }
+.dg .dot.r1 { fill: var(--series-1); } .dg .dot.r2 { fill: var(--series-3); } .dg .dot.r3 { fill: var(--series-2); }
+.dg .port { fill: var(--ink); stroke: var(--card); stroke-width: 3; }
+.dg .storm ellipse { fill: color-mix(in srgb, var(--series-2) 14%, transparent); stroke: var(--series-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.dg .cloud { fill: color-mix(in srgb, var(--ink) 18%, var(--card)); stroke: var(--muted); stroke-width: 1.5; }
+.dg .bolt { fill: var(--series-4); }
+.dg .wind, .dg .windarrow { fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; color: var(--muted); }
+.dg .axis { fill: none; stroke: var(--muted); stroke-width: 1.5; color: var(--muted); }
+.dg .front { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+.dg .frontpts circle { fill: var(--accent); stroke: var(--card); stroke-width: 2; }
+.dg .dominated circle { fill: color-mix(in srgb, var(--muted) 35%, var(--card)); }
+.dg .flow.dashed { stroke-dasharray: 4 4; }
+.ship .hull { fill: var(--hero-2); stroke: var(--hero-1); stroke-width: 1; }
+.ship .hull-band { fill: var(--series-2); }
+.ship .bridge { fill: #f4f1ea; stroke: var(--hero-1); stroke-width: 1; }
+.ship .win { fill: var(--hero-2); } .ship .stack { fill: var(--series-2); }
+.ship .box1 { fill: var(--series-1); } .ship .box2 { fill: var(--series-3); } .ship .box3 { fill: var(--series-4); } .ship .box4 { fill: var(--series-2); }
+.ship rect[class^="box"] { stroke: var(--card); stroke-width: .8; }
+.dg .chip { fill: var(--hero-1); stroke: var(--hero-2); stroke-width: 1.5; }
+.dg .pin { fill: #c9a24a; }
+.dg .core { fill: #2c3f55; }
+.dg .core.on { fill: var(--accent); }
+.dg .core.on.g { fill: #76b900; }
+.dg .board { fill: #1d2733; stroke: #3a4757; stroke-width: 1.5; }
+.dg .bracket { fill: #9aa5b1; }
+.dg .fan { fill: #0f161f; stroke: #4b5a6b; stroke-width: 1.5; }
+.dg .blade { fill: none; stroke: #8796a6; stroke-width: 2.5; stroke-linecap: round; }
+.dg .hub { fill: #4b5a6b; }
+.dg .finger { fill: #c9a24a; }
+.dg .link { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 3 3; fill: none; }
+.dg .nn circle { fill: var(--accent); }
+.dg .nn path { stroke: var(--accent); stroke-width: 1.2; fill: none; opacity: .7; }
+.dg .hourglass path { fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; }
+.dg .hourglass .sand { fill: var(--series-4); stroke: none; }
+.dg .cust { fill: var(--card); stroke: var(--ink-2); stroke-width: 2; }
+.dg .depot { fill: var(--ink); }
+.truck .tbox { fill: var(--series-1); } .truck .tcab { fill: var(--hero-2); } .truck .wheel { fill: var(--ink); stroke: var(--card); stroke-width: 1.5; }
+.dg .legendbg { fill: color-mix(in srgb, var(--card) 85%, transparent); stroke: var(--line); }

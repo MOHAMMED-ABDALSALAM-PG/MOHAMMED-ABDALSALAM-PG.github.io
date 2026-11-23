@@ -157,7 +157,7 @@
     "points": [
       "Parallel multi-objective evolutionary algorithms (NSGA-II, SPEA2, MOEA/D) with OpenMP, CUDA and hybrid CPU–GPU execution for ship weather routing.",
       "Machine-learning surrogate models of the S175 ship-performance simulator within the ERA-NET MarTERA ROUTING project.",
-      "Collaboration with Prof. Daniele Vigo and Dr. Luca Accorsi (Italy) on multi-objective vehicle routing."
+      "Collaboration with Prof. Daniele Vigo (University of Bologna) and Dr. Luca Accorsi on integrating their FILO2 vehicle-routing heuristic with PMOO."
     ]
   }
 }

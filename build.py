@@ -11,6 +11,8 @@ import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 
+import figures
+
 ROOT = Path(__file__).resolve().parent
 DIST = ROOT / "dist"
 
@@ -319,41 +321,15 @@ def chart_recency():
 
 # --------------------------------------------------------------------------- diagrams (conceptual)
 def diagram(kind):
+    if kind == "routing":
+        return figures.routing_scene()
     if kind == "pmoo":
-        svg = """<svg viewBox="0 0 680 250" role="img" aria-labelledby="dg-pmoo-t">
-<title id="dg-pmoo-t">How the four PMOO execution variants distribute one generation of a multi-objective evolutionary algorithm</title>
-<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="currentColor"/></marker></defs>
-<g class="dg">
-<rect class="box" x="10" y="95" width="130" height="60" rx="10"/><text x="75" y="120" text-anchor="middle">Population</text><text class="sm" x="75" y="138" text-anchor="middle">N candidate routes</text>
-<rect class="box accent" x="190" y="20" width="200" height="44" rx="10"/><text x="290" y="47" text-anchor="middle">SERIAL · one host thread</text>
-<rect class="box accent" x="190" y="76" width="200" height="44" rx="10"/><text x="290" y="103" text-anchor="middle">CPU · OpenMP threads</text>
-<rect class="box accent" x="190" y="132" width="200" height="44" rx="10"/><text x="290" y="159" text-anchor="middle">GPU · CUDA kernels</text>
-<rect class="box accent" x="190" y="188" width="200" height="44" rx="10"/><text x="290" y="215" text-anchor="middle">HYBRID · OpenMP + CUDA</text>
-<rect class="box" x="440" y="70" width="230" height="110" rx="10"/><text x="555" y="98" text-anchor="middle">Generation step</text>
-<text class="sm" x="555" y="120" text-anchor="middle">variation · evaluation</text><text class="sm" x="555" y="138" text-anchor="middle">non-dominated sorting / decomposition</text><text class="sm" x="555" y="156" text-anchor="middle">NSGA-II · SPEA2 · MOEA/D</text>
-<path class="flow" d="M140 125 C165 125 165 42 188 42" marker-end="url(#ar)"/><path class="flow" d="M140 125 C165 125 165 98 188 98" marker-end="url(#ar)"/>
-<path class="flow" d="M140 125 C165 125 165 154 188 154" marker-end="url(#ar)"/><path class="flow" d="M140 125 C165 125 165 210 188 210" marker-end="url(#ar)"/>
-<path class="flow" d="M390 42 C415 42 415 110 438 110" marker-end="url(#ar)"/><path class="flow" d="M390 98 C415 98 415 118 438 118" marker-end="url(#ar)"/>
-<path class="flow" d="M390 154 C415 154 415 132 438 132" marker-end="url(#ar)"/><path class="flow" d="M390 210 C415 210 415 140 438 140" marker-end="url(#ar)"/>
-</g></svg>"""
-        cap = "Conceptual diagram (not experimental data): the same algorithms run in four execution variants so that runtime and solution quality can be compared fairly."
-    elif kind == "s175":
-        svg = """<svg viewBox="0 0 680 230" role="img" aria-labelledby="dg-s175-t">
-<title id="dg-s175-t">Structure of the S175 surrogate: shared input scaling, two feasibility classifiers and a regressor</title>
-<defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="currentColor"/></marker></defs>
-<g class="dg">
-<rect class="box" x="10" y="80" width="130" height="70" rx="10"/><text x="75" y="108" text-anchor="middle">9 inputs</text><text class="sm" x="75" y="126" text-anchor="middle">speed setting, draft,</text><text class="sm" x="75" y="140" text-anchor="middle">waves, wind …</text>
-<rect class="box" x="175" y="92" width="110" height="46" rx="10"/><text x="230" y="120" text-anchor="middle">Standardise</text>
-<rect class="box accent" x="325" y="14" width="170" height="52" rx="10"/><text x="410" y="36" text-anchor="middle">Classifier C1</text><text class="sm" x="410" y="54" text-anchor="middle">fully infeasible?</text>
-<rect class="box accent" x="325" y="89" width="170" height="52" rx="10"/><text x="410" y="111" text-anchor="middle">Classifier C2</text><text class="sm" x="410" y="129" text-anchor="middle">fuel output infeasible?</text>
-<rect class="box accent" x="325" y="164" width="170" height="52" rx="10"/><text x="410" y="186" text-anchor="middle">Regressor (MLP)</text><text class="sm" x="410" y="204" text-anchor="middle">asymmetric, masked loss</text>
-<rect class="box" x="535" y="80" width="135" height="70" rx="10"/><text x="602" y="108" text-anchor="middle">10 outputs</text><text class="sm" x="602" y="126" text-anchor="middle">speed, fuel,</text><text class="sm" x="602" y="140" text-anchor="middle">seakeeping</text>
-<path class="flow" d="M140 115H173" marker-end="url(#ar2)"/>
-<path class="flow" d="M285 115 C305 115 305 40 323 40" marker-end="url(#ar2)"/><path class="flow" d="M285 115H323" marker-end="url(#ar2)"/><path class="flow" d="M285 115 C305 115 305 190 323 190" marker-end="url(#ar2)"/>
-<path class="flow" d="M495 40 C515 40 515 108 533 108" marker-end="url(#ar2)"/><path class="flow" d="M495 115H533" marker-end="url(#ar2)"/><path class="flow" d="M495 190 C515 190 515 122 533 122" marker-end="url(#ar2)"/>
-</g></svg>"""
-        cap = "Conceptual diagram (not experimental data): the classifiers flag operating points the simulator cannot evaluate; the regressor predicts the remaining outputs, with errors biased toward the safe side."
-    else:
+        return figures.pmoo_hardware()
+    if kind == "s175":
+        return figures.surrogate_scene()
+    if kind == "filo2":
+        return figures.filo2_scene()
+    if True:
         svg = """<svg viewBox="0 0 680 210" role="img" aria-labelledby="dg-hs-t">
 <title id="dg-hs-t">Hybrid annotation and modelling pipeline for Sudanese Arabic harmful-language detection</title>
 <defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="currentColor"/></marker></defs>
@@ -494,6 +470,12 @@ def home():
 </section>
 
 <section class="wrap section">
+  <div class="section-head"><h2>My PhD work in one picture</h2><a class="more" href="/research/">Read more →</a></div>
+  <p class="lede-sm">Planning a ship's route through changing weather, and making the computation fast enough to be useful.</p>
+  {figures.overview_story()}
+</section>
+
+<section class="wrap section">
   <div class="section-head"><h2>Research directions</h2><a class="more" href="/research/">Research overview →</a></div>
   <ul class="areas">{area_cards}</ul>
 </section>
@@ -536,19 +518,24 @@ def research():
     sections = [
         ("maritime", "maritime-hpc", "Maritime AI and multi-objective optimisation",
          "A ship's route through changing weather trades off voyage time, fuel and safety. These goals conflict, so there is no single best route but a Pareto front of compromises — and computing it with evolutionary algorithms over a weather forecast is expensive.",
-         "Multi-objective evolutionary algorithms (NSGA-II, SPEA2, MOEA/D) and Pareto-front analysis; parallel implementations with OpenMP, CUDA and hybrid CPU–GPU execution; a PRISMA-based systematic review of how HPC has been used in ship weather routing. In collaboration with Prof. Daniele Vigo and Dr. Luca Accorsi, the same ideas are being applied to multi-objective vehicle routing.",
+         "Multi-objective evolutionary algorithms (NSGA-II, SPEA2, MOEA/D) and Pareto-front analysis; parallel implementations with OpenMP, CUDA and hybrid CPU–GPU execution; a PRISMA-based systematic review of how HPC has been used in ship weather routing.",
          "Faster optimisers let routing systems re-plan as forecasts update, which is a prerequisite for using multi-objective routing operationally rather than offline.",
-         ["abdalsalam2025towards"], "pmoo"),
+         ["abdalsalam2025towards"], ["routing", "pmoo"]),
+        ("filo2", "maritime-hpc", "Large-scale vehicle routing: FILO2 inside PMOO (collaboration)",
+         "Delivery companies plan routes for thousands of customers, and in practice they care about more than total distance. Multi-objective algorithms can show those trade-offs, but on their own they are too slow for problems of this size.",
+         "Together with Prof. Daniele Vigo (University of Bologna) and Dr. Luca Accorsi, I am integrating FILO2, their state-of-the-art heuristic for very large vehicle-routing problems, with my PMOO framework. The aim is to let PMOO's algorithms (NSGA-II, SPEA2, MOEA/D) use FILO2 as their fast improvement engine, so that they can find a set of good trade-off route plans for large instances.",
+         "It brings the speed of a leading single-objective solver into multi-objective optimisation, and carries the ideas of my ship-routing work over to road logistics.",
+         [], ["filo2"]),
         ("surrogates", "maritime-hpc", "Machine learning for scientific computing",
          "Physics-based ship-performance models are accurate but slow; inside an optimiser they are called millions of times. Infeasible operating points and safety-relevant outputs make naive regression risky.",
          "Neural surrogate models trained on large simulator grids (126 million evaluations of the S175 model in the ERA-NET MarTERA ROUTING project), explicit feasibility classifiers, asymmetric loss functions that bias errors toward conservative predictions, leakage-safe splits and off-grid validation against fresh simulator runs.",
          "Reliable surrogates move expensive physics out of the inner loop of route optimisation while keeping its safety-critical behaviour visible.",
-         [], "s175"),
+         [], ["s175"]),
         ("arabic-nlp", "arabic-nlp", "Low-resource Arabic NLP and Sudanese dialects",
          "Sudanese Arabic has very few labelled datasets, so harmful-language detection, sentiment analysis and dialect identification lag far behind Modern Standard Arabic and the better-resourced dialects.",
          "Corpus construction from social media and app reviews; hybrid annotation that combines Sudanese-specific weak-supervision rules with large language model labelling and native-speaker review; continued pre-training of a Sudanese BERT (SudaBERT-v2); systematic comparison of fine-tuned Arabic BERT models and zero/few-shot LLMs; explainability with SHAP and LIME.",
          "Shared corpora, models and reproducible benchmarks are what allow a low-resource dialect community to build moderation, analytics and assistive tools.",
-         ["abdalsalam2026hate", "abdalsalam2026dialect"], "hs"),
+         ["abdalsalam2026hate", "abdalsalam2026dialect"], ["hs"]),
         ("arabic-tech", "arabic-nlp", "Arabic language technologies",
          "Arabic script is cursive with position-dependent letter forms, and Arabic grammar is morphologically rich — both hard for recognition and correction systems.",
          "Convolutional networks, CNN–Kolmogorov–Arnold Network hybrids and attention for handwritten character recognition; sequence-to-sequence and multi-task grammatical error correction with large synthetic training data (co-authored work).",
@@ -565,6 +552,10 @@ def research():
          "Contributes machine-learning methods to proactive content delivery in next-generation networks.",
          ["kombo2025collaborative", "kombo2025mobility", "kombo2026location"], None),
     ]
+    NOTES = {
+        "surrogates": '<p class="muted">Manuscript under consideration; code at <a href="https://github.com/MOHAMMED-ABDALSALAM-PG/S175-ML-surrogate">S175-ML-surrogate</a>.</p>',
+        "filo2": '<p class="muted">Ongoing collaboration, shown as an overview only. FILO2 itself is by L. Accorsi and D. Vigo (<a href="https://doi.org/10.1016/j.cor.2024.106562">Computers &amp; Operations Research, 2024</a>).</p>',
+    }
     toc = "".join(f'<li><a href="#{sid}">{e(title)}</a></li>' for sid, _, title, *_ in sections)
     blocks = []
     for sid, topic, title, problem, methods, why, ids, dg in sections:
@@ -575,12 +566,13 @@ def research():
     <div><h3>Methods</h3><p>{e(methods)}</p></div>
     <div><h3>Why it matters</h3><p>{e(why)}</p></div>
   </div>
-  {diagram(dg) if dg else ''}
-  {('<h3 class="refs-h">Related papers</h3>' + refs(ids)) if ids else '<p class="muted">Manuscript under consideration; code at <a href="https://github.com/MOHAMMED-ABDALSALAM-PG/S175-ML-surrogate">S175-ML-surrogate</a>.</p>'}
+  {''.join(diagram(k) for k in (dg or []))}
+  {('<h3 class="refs-h">Related papers</h3>' + refs(ids)) if ids else NOTES.get(sid, '')}
 </section>""")
     body = f"""<section class="wrap page-head"><p class="eyebrow">Research</p><h1>Algorithms, computing and language</h1>
 <p class="lede">My doctoral work, <em>{e(PROFILE['dissertation'])}</em>, connects evolutionary optimisation, machine learning and parallel computing. Alongside it, I build data and models for low-resource Arabic.</p>
 <nav class="toc" aria-label="Research areas"><ul>{toc}</ul></nav></section>
+<section class="wrap"><h2 class="story-h">The big picture</h2>{figures.overview_story()}</section>
 <div class="wrap">{''.join(blocks)}</div>"""
     return page("/research/", "Research", "Research directions of Mohammed Abdalsalam: ship weather routing, parallel multi-objective optimisation, ML surrogates, and low-resource Arabic NLP.", body)
 
