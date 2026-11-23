@@ -74,61 +74,67 @@ def ds_icon_g(name, x, y, size=28):
 
 
 # ------------------------------------------------------------------ overview figure
-def _box(x, y, w, h, title, lines, cls="box", ic=None, ic_cls=""):
+def _step(x, y, w, h, num, title, lines, cls="box", lh=19):
     out = f'<rect class="{cls}" x="{x}" y="{y}" width="{w}" height="{h}" rx="10"/>'
-    tx = x + 14
-    if ic:
-        out += glyph(ic, x + 12, y + 12, 22, ic_cls)
-        tx = x + 44
-    out += f'<text class="lbl" x="{tx}" y="{y + 29}">{title}</text>'
-    for i, ln in enumerate(lines):
-        out += f'<text class="note" x="{x + 14}" y="{y + 56 + i * 19}">{ln}</text>'
+    out += f'<circle class="badge" cx="{x + 22}" cy="{y + 24}" r="11"/><text class="badge-t" x="{x + 22}" y="{y + 28.5}" text-anchor="middle">{num}</text>'
+    out += f'<text class="lbl" x="{x + 40}" y="{y + 29}">{title}</text>'
+    for k, ln in enumerate(lines):
+        out += f'<text class="note" x="{x + 14}" y="{y + 58 + k * lh}">{ln}</text>'
     return out
+
+
+DS_FIG = [("Dialect corpus", "6.76 M", "sentences", "s1"), ("Hate speech", "40,000", "sentences", "s2"), ("Sentiment", "13,293", "reviews", "s3")]
 
 
 def flow_wide():
     s = [A.format(id="arD")]
-    for i, (g, name, c) in enumerate(SOURCES):
-        y = 16 + i * 66
-        s.append(f'<rect class="box" x="6" y="{y}" width="150" height="54" rx="10"/>')
-        s.append(brand_g(g, 16, y + 14, 26))
-        s.append(f'<text class="lbl" x="48" y="{y + 32}">{name.replace(" pages", "")}</text>')
-        s.append(f'<path class="flow" d="M158 {y + 27} C168 {y + 27} 166 144 176 144" marker-end="url(#arD)"/>')
-    s.append(_box(180, 40, 142, 208, "Collect", ["Python collectors", "public posts and", "reviews only", "throttled requests", "platform terms", "respected"], "box", "gear"))
-    s.append('<path class="flow" d="M324 144 h14" marker-end="url(#arD)"/>')
-    s.append(_box(342, 40, 142, 208, "Protect", ["emails, phones,", "links and user", "mentions removed", "deduplicated", "texts shared as", "IDs + labels"], "box accent", "shield"))
-    for i, (t, n, k) in enumerate([("Dialect corpus", "6.76 M sentences", "corpus"), ("Hate speech", "40,000 labelled", "hate"), ("Sentiment", "13,293 reviews", "sentiment")]):
-        y = 16 + i * 92
-        s.append(f'<path class="flow" d="M486 144 C494 144 492 {y + 38} 500 {y + 38}" marker-end="url(#arD)"/>')
-        s.append(f'<rect class="box ds" x="504" y="{y}" width="130" height="76" rx="10"/>')
-        s.append(ds_icon_g(k, 598, y + 36, 28))
-        s.append(f'<text class="mono" x="516" y="{y + 24}">{t}</text>')
-        s.append(f'<text class="lbl" x="516" y="{y + 52}">{n.split(" ")[0] + (" M" if " M " in n else "")}</text>')
-        s.append(f'<text class="mono dim" x="516" y="{y + 68}">{n.split(" ")[-1]}</text>')
-    return ('<svg class="wide-fig" viewBox="0 0 640 296" role="img" aria-labelledby="f-data-t"><title id="f-data-t">'
-            'From public social-media posts and app reviews to three Sudanese dialect datasets: collect, protect, label</title>'
+    ys = [29 + i * 64 for i in range(4)]               # source tiles, 50 high -> centres 54, 118, 182, 246
+    for (g, name, c), y in zip(SOURCES, ys):
+        s.append(f'<rect class="box" x="8" y="{y}" width="138" height="50" rx="10"/>')
+        s.append(brand_g(g, 20, y + 12, 26))
+        s.append(f'<text class="lbl" x="56" y="{y + 30}">{name.replace(" pages", "")}</text>')
+        s.append(f'<path class="bus" d="M146 {y + 25} H162"/>')
+    s.append('<path class="bus" d="M162 54 V246"/>')
+    s.append('<path class="flow" d="M162 150 H180" marker-end="url(#arD)"/>')
+    s.append(_step(184, 60, 148, 180, 1, "Collect", ["Python collectors", "public posts and", "reviews only", "throttled requests", "platform terms", "respected"]))
+    s.append('<path class="flow" d="M332 150 H354" marker-end="url(#arD)"/>')
+    s.append(_step(358, 60, 148, 180, 2, "Protect", ["emails, phones,", "links and user", "mentions removed", "deduplicated", "texts shared as", "IDs + labels"], "box accent"))
+    s.append('<path class="bus" d="M506 150 H522"/><path class="bus" d="M522 75 V225"/>')
+    s.append('<circle class="badge" cx="551" cy="20" r="11"/><text class="badge-t" x="551" y="24.5" text-anchor="middle">3</text><text class="lbl" x="568" y="25">Datasets</text>')
+    for k, (t, big, unit, c) in enumerate(DS_FIG):
+        y = 43 + k * 75                                 # 64 high -> centres 75, 150, 225
+        s.append(f'<path class="flow" d="M522 {y + 32} H536" marker-end="url(#arD)"/>')
+        s.append(f'<rect class="box" x="540" y="{y}" width="126" height="64" rx="10"/>')
+        s.append(f'<rect class="{c}" x="540" y="{y + 10}" width="5" height="44" rx="2.5"/>')
+        s.append(f'<text class="mono" x="554" y="{y + 20}">{t}</text>')
+        s.append(f'<text class="lbl" x="554" y="{y + 41}">{big}</text>')
+        s.append(f'<text class="mono dim" x="554" y="{y + 56}">{unit}</text>')
+    return ('<svg class="wide-fig" viewBox="0 0 672 290" role="img" aria-labelledby="f-data-t"><title id="f-data-t">'
+            'From public social-media posts and app reviews to three Sudanese dialect datasets: collect, protect, release</title>'
             f'<g class="dg">{"".join(s)}</g></svg>')
 
 
 def flow_narrow():
     s = [A.format(id="arDn")]
     for i, (g, name, c) in enumerate(SOURCES):
-        x, y = 6 + (i % 2) * 168, 6 + (i // 2) * 62
-        s.append(f'<rect class="box" x="{x}" y="{y}" width="160" height="52" rx="10"/>')
-        s.append(brand_g(g, x + 12, y + 13, 26))
-        s.append(f'<text class="lbl" x="{x + 46}" y="{y + 31}">{name.replace(" pages", "")}</text>')
-    s.append('<path class="flow" d="M170 124 v16" marker-end="url(#arDn)"/>')
-    s.append(_box(6, 144, 328, 104, "Collect", ["Python collectors · public posts and", "reviews only · throttled requests ·", "platform terms respected"], "box", "gear"))
-    s.append('<path class="flow" d="M170 250 v16" marker-end="url(#arDn)"/>')
-    s.append(_box(6, 270, 328, 104, "Protect", ["emails, phones, links and user mentions", "removed · duplicates removed · texts", "shared as IDs + labels"], "box accent", "shield"))
-    s.append('<path class="flow" d="M170 376 v16" marker-end="url(#arDn)"/>')
-    for i, (t, n, k) in enumerate([("Dialect corpus", "6.76 M sentences", "corpus"), ("Hate speech", "40,000 labelled", "hate"), ("Sentiment", "13,293 reviews", "sentiment")]):
-        y = 396 + i * 56
-        s.append(f'<rect class="box ds" x="6" y="{y}" width="328" height="46" rx="10"/>')
-        s.append(ds_icon_g(k, 14, y + 9, 28))
-        s.append(f'<text class="lbl" x="48" y="{y + 29}">{t}</text>')
-        s.append(f'<text class="note" x="322" y="{y + 29}" text-anchor="end">{n}</text>')
-    return ('<svg class="narrow-fig" viewBox="0 0 340 562" role="img" aria-labelledby="f-datan-t"><title id="f-datan-t">'
+        x, y = 6 + (i % 2) * 168, 6 + (i // 2) * 60
+        s.append(f'<rect class="box" x="{x}" y="{y}" width="160" height="50" rx="10"/>')
+        s.append(brand_g(g, x + 12, y + 12, 26))
+        s.append(f'<text class="lbl" x="{x + 48}" y="{y + 30}">{name.replace(" pages", "")}</text>')
+    s.append('<path class="flow" d="M170 118 V138" marker-end="url(#arDn)"/>')
+    s.append(_step(6, 142, 328, 114, 1, "Collect", ["Python collectors · public posts and", "reviews only · throttled requests ·", "platform terms respected"]))
+    s.append('<path class="flow" d="M170 256 V276" marker-end="url(#arDn)"/>')
+    s.append(_step(6, 280, 328, 114, 2, "Protect", ["emails, phones, links and user", "mentions removed · deduplicated ·", "texts shared as IDs + labels"], "box accent"))
+    s.append('<path class="flow" d="M170 394 V414" marker-end="url(#arDn)"/>')
+    s.append('<circle class="badge" cx="28" cy="432" r="11"/><text class="badge-t" x="28" y="436.5" text-anchor="middle">3</text>')
+    s.append('<text class="lbl" x="46" y="437">Datasets</text>')
+    for k, (t, big, unit, c) in enumerate(DS_FIG):
+        y = 454 + k * 56
+        s.append(f'<rect class="box" x="6" y="{y}" width="328" height="46" rx="10"/>')
+        s.append(f'<rect class="{c}" x="6" y="{y + 8}" width="5" height="30" rx="2.5"/>')
+        s.append(f'<text class="lbl" x="22" y="{y + 28}">{t}</text>')
+        s.append(f'<text class="note" x="322" y="{y + 28}" text-anchor="end">{big} {unit}</text>')
+    return ('<svg class="narrow-fig" viewBox="0 0 340 628" role="img" aria-labelledby="f-datan-t"><title id="f-datan-t">'
             'From public posts and reviews to three Sudanese dialect datasets</title>'
             f'<g class="dg">{"".join(s)}</g></svg>')
 
@@ -136,7 +142,7 @@ def flow_narrow():
 def overview_figure():
     cap = ("How the data are built. Public posts and app reviews are collected with Python tools, personal details are removed, "
            "and the labelled data are shared as record identifiers and labels rather than raw texts. Platform names and logos belong to their owners.")
-    return f'<figure class="diagram narrow">{flow_wide()}{flow_narrow()}<figcaption>{cap}</figcaption></figure>'
+    return f'<figure class="diagram narrow data-flow">{flow_wide()}{flow_narrow()}<figcaption>{cap}</figcaption></figure>'
 
 
 # ------------------------------------------------------------------ small charts for the dataset cards

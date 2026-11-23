@@ -684,3 +684,8 @@ nav a, .lab-btn, .lab-tab, .lab-pref, .nav-toggle { font-style: normal; }
 .bio { max-width: 74ch; }
 .bio p { color: var(--ink-2); font-size: 1rem; line-height: 1.7; margin: 0 0 1rem; }
 .bio p:first-child { color: var(--ink); font-size: 1.05rem; }
+
+.dg .bus { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+.dg .badge { fill: var(--accent); }
+.dg text.badge-t { fill: var(--card); font: 700 12px var(--sans); }
+.diagram.data-flow svg.wide-fig { max-width: 780px; }
