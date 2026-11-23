@@ -51,7 +51,9 @@ def gpu(x, y, w=150, h=80, label=""):
     """Generic graphics card: board, fan, a die with many small cores, edge connector."""
     die_x, die_y, die_w, die_h = x + w * 0.46, y + 12, w * 0.46, h - 30
     cells = ""
-    n_c, n_r = 12, 7
+    n_c = 12 if die_w > 40 else 6
+    n_r = max(2, min(7, int((die_h - 8) / 4)))
+    die_h = max(die_h, 18)
     cw, ch = (die_w - 8) / n_c, (die_h - 8) / n_r
     for i in range(n_c):
         for j in range(n_r):
@@ -227,3 +229,75 @@ def filo2_scene():
     cap = ('Illustration of the idea. FILO2 is the open-source heuristic for very large vehicle-routing problems by L. Accorsi and D. Vigo '
            '(<a href="https://doi.org/10.1016/j.cor.2024.106562">Computers &amp; Operations Research, 2024</a>). Ongoing work; no results are reported here.')
     return fig(svg, cap, "narrow")
+
+
+# ---------------------------------------------------------------- small card figures (software cards)
+def _steps(labels, y=58, x0=12, w=None, accent=None, sub=None):
+    """A row of small step boxes joined by arrows; used for compact pipeline figures."""
+    n = len(labels)
+    w = w or (296 - (n - 1) * 14) / n
+    out = ""
+    for i, lab in enumerate(labels):
+        x = x0 + i * (w + 14)
+        cls = "box accent" if accent and i in accent else "box"
+        out += f'<rect class="{cls}" x="{x:.1f}" y="{y}" width="{w:.1f}" height="46" rx="8"/>'
+        lines = lab.split("|")
+        for k, ln in enumerate(lines):
+            out += f'<text class="mono" x="{x + w / 2:.1f}" y="{y + 22 + (k - (len(lines) - 1) / 2) * 13:.1f}" text-anchor="middle">{ln}</text>'
+        if sub and sub[i]:
+            out += f'<text class="mono dim" x="{x + w / 2:.1f}" y="{y + 64}" text-anchor="middle">{sub[i]}</text>'
+        if i < n - 1:
+            out += f'<path class="flow" d="M{x + w + 2:.1f} {y + 23} h10" marker-end="url(#arC)"/>'
+    return out
+
+
+def card_figure(kind):
+    a = ARROW.format(id="arC")
+    if kind == "pmoo":
+        body = (cpu(18, 30, 52, 8, 8) + gpu(96, 32, 92, 50) +
+                '<path class="link" d="M74 56 H88"/>' +
+                '<text class="mono" x="44" y="112" text-anchor="middle">OpenMP</text><text class="mono" x="142" y="112" text-anchor="middle">CUDA</text>'
+                '<rect class="box accent" x="212" y="26" width="96" height="76" rx="8"/>'
+                '<text class="mono" x="260" y="48" text-anchor="middle">NSGA-II</text><text class="mono" x="260" y="66" text-anchor="middle">SPEA2</text><text class="mono" x="260" y="84" text-anchor="middle">MOEA/D</text>'
+                '<path class="flow" d="M192 56 h16" marker-end="url(#arC)"/>'
+                '<text class="mono dim" x="160" y="140" text-anchor="middle">serial · cpu · gpu · hybrid</text>')
+    elif kind == "s175":
+        body = (f'<rect class="sea" x="10" y="20" width="96" height="70" rx="8"/>{ship(16, 66, 0.8)}{waves(10, 72, 96)}'
+                '<text class="mono dim" x="58" y="108" text-anchor="middle">9 inputs</text>'
+                '<path class="flow" d="M110 55 h16" marker-end="url(#arC)"/>'
+                '<rect class="box" x="130" y="18" width="80" height="32" rx="8"/><text class="mono" x="170" y="38" text-anchor="middle">feasible?</text>'
+                '<rect class="box accent" x="130" y="60" width="80" height="32" rx="8"/><text class="mono" x="170" y="80" text-anchor="middle">regressor</text>'
+                '<path class="flow" d="M214 55 h16" marker-end="url(#arC)"/>'
+                '<rect class="box" x="234" y="30" width="76" height="50" rx="8"/><text class="mono" x="272" y="52" text-anchor="middle">speed</text><text class="mono" x="272" y="68" text-anchor="middle">fuel · motion</text>'
+                '<text class="mono dim" x="160" y="132" text-anchor="middle">simulator ≈ 9–14 s → surrogate ≈ 3 ms</text>')
+    elif kind == "swr":
+        bars = [(1.0, "search"), (0.66, "deduplicate"), (0.4, "screen"), (0.2, "include")]
+        body = ""
+        for i, (f, lab) in enumerate(bars):
+            w = 200 * f
+            body += f'<rect class="funnel f{i}" x="{160 - w / 2:.1f}" y="{14 + i * 30}" width="{w:.1f}" height="24" rx="5"/>'
+            body += f'<text class="mono" x="{160}" y="{30 + i * 30}" text-anchor="middle">{lab}</text>'
+        body += '<text class="mono dim" x="160" y="140" text-anchor="middle">PRISMA 2020 · reproducible queries and logs</text>'
+    elif kind == "hate":
+        body = _steps(["social|media", "clean", "rules|+ LLM", "models|+ SHAP"], y=34, accent=[2],
+                      sub=["Telegram", "dedupe", "native review", "explain"])
+        body += '<text class="mono dim" x="160" y="140" text-anchor="middle">Sudanese Arabic · harmful-language detection</text>'
+    elif kind == "dialect":
+        body = ('<rect class="box" x="12" y="44" width="70" height="44" rx="8"/><text class="mono" x="47" y="70" text-anchor="middle">Arabic text</text>'
+                '<path class="flow" d="M84 60 C100 60 100 36 116 36" marker-end="url(#arC)"/><path class="flow" d="M84 72 C100 72 100 96 116 96" marker-end="url(#arC)"/>'
+                '<rect class="box accent" x="120" y="16" width="96" height="40" rx="8"/><text class="mono" x="168" y="40" text-anchor="middle">fine-tuned BERT</text>'
+                '<rect class="box" x="120" y="76" width="96" height="40" rx="8"/><text class="mono" x="168" y="100" text-anchor="middle">LLM 0/few-shot</text>'
+                '<path class="flow" d="M218 36 C234 36 234 60 248 60" marker-end="url(#arC)"/><path class="flow" d="M218 96 C234 96 234 72 248 72" marker-end="url(#arC)"/>'
+                '<rect class="box" x="252" y="40" width="58" height="52" rx="8"/><text class="mono" x="281" y="62" text-anchor="middle">dialect</text><text class="mono" x="281" y="78" text-anchor="middle">label</text>'
+                '<text class="mono dim" x="160" y="140" text-anchor="middle">binary and 18-dialect settings</text>')
+    elif kind == "fusion":
+        body = ('<rect class="box" x="12" y="18" width="84" height="36" rx="8"/><text class="mono" x="54" y="40" text-anchor="middle">narrative text</text>'
+                '<rect class="box" x="12" y="62" width="84" height="36" rx="8"/><text class="mono" x="54" y="84" text-anchor="middle">attributes</text>'
+                '<path class="flow" d="M98 36 C116 36 116 52 132 54" marker-end="url(#arC)"/><path class="flow" d="M98 80 C116 80 116 64 132 62" marker-end="url(#arC)"/>'
+                '<rect class="box accent" x="136" y="36" width="80" height="44" rx="8"/><text class="mono" x="176" y="62" text-anchor="middle">fusion model</text>'
+                '<path class="flow" d="M218 58 h18" marker-end="url(#arC)"/>'
+                '<rect class="box" x="240" y="36" width="70" height="44" rx="8"/><text class="mono" x="275" y="56" text-anchor="middle">event</text><text class="mono" x="275" y="70" text-anchor="middle">class</text>'
+                '<text class="mono dim" x="160" y="132" text-anchor="middle">Global Terrorism Database</text>')
+    else:
+        return ""
+    return f'<svg class="dg cardfig" viewBox="0 0 320 150" role="img" aria-label="Schematic of the {kind} project">{a}{body}</svg>'

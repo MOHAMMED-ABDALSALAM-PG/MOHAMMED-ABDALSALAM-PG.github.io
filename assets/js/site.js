@@ -82,3 +82,8 @@
   });
   apply();
 })();
+// Sidebar details start closed on small screens
+(function () {
+  var d = document.querySelector(".side-more");
+  if (d && window.matchMedia("(max-width: 860px)").matches) d.removeAttribute("open");
+})();

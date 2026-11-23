@@ -63,8 +63,8 @@ def link_btn(url, label, ic="ext", cls="btn-link"):
     return f'<a class="{cls}" href="{e(url)}" rel="noopener" target="_blank">{icon(ic, 15)}<span>{e(label)}</span></a>'
 
 
-NAV = [("/", "Home"), ("/research/", "Research"), ("/publications/", "Publications"),
-       ("/projects/", "Software & Data"), ("/about/", "About")]
+NAV = [("/research/", "Research"), ("/publications/", "Publications"), ("/projects/", "Software"),
+       ("/about/", "Academic"), ("/#contact", "Contact")]
 
 
 def page(path, title, description, body, extra_head=""):
@@ -111,34 +111,22 @@ def page(path, title, description, body, extra_head=""):
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
-  <div class="wrap header-inner">
-    <a class="brand" href="/" aria-label="{e(PROFILE['short_name'])}, home"><span class="brand-mark" aria-hidden="true">MA</span><span class="brand-name">{e(PROFILE['short_name'])}</span></a>
+  <div class="hdr">
+    <a class="brand" href="/">{e(PROFILE['short_name'])}</a>
     <nav aria-label="Main">
-      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-list"><span class="sr-only">Menu</span><span class="bars" aria-hidden="true"></span></button>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-list">Menu <span class="bars" aria-hidden="true"></span></button>
       <ul id="nav-list">{nav}</ul>
     </nav>
     <button class="theme-toggle" type="button" aria-label="Toggle dark mode">{icon('moon')}{icon('sun')}</button>
   </div>
 </header>
+<div class="shell">
+{sidebar()}
 <main id="main">
 {body}
+<footer class="site-footer"><p>© {BUILD_DATE[:4]} {e(PROFILE['short_name'].upper())}</p><p>Optimisation · HPC · Machine learning · Arabic NLP</p></footer>
 </main>
-<footer class="site-footer">
-  <div class="wrap footer-inner">
-    <div>
-      <p class="foot-name">{e(PROFILE['name'])}</p>
-      <p>PhD candidate, {e(PROFILE['affiliation'])} · {e(PROFILE['employer_role'])}, {e(PROFILE['employer'])}</p>
-      <p><a href="mailto:{PROFILE['email']}">{e(PROFILE['email'])}</a></p>
-    </div>
-    <ul class="foot-links">
-      <li><a href="https://orcid.org/{PROFILE['orcid']}" rel="noopener">ORCID</a></li>
-      <li><a href="https://github.com/{PROFILE['github']}" rel="noopener">GitHub</a></li>
-      <li><a href="https://github.com/{PROFILE['github_nlp']}" rel="noopener">GitHub (NLP)</a></li>
-      <li><a href="/publications.json">Publication data (JSON)</a></li>
-    </ul>
-  </div>
-  <div class="wrap foot-meta"><p>Content verified against publisher records, Crossref and ORCID; last built {BUILD_DATE}.</p></div>
-</footer>
+</div>
 <script src="/assets/js/site.js" defer></script>
 </body>
 </html>
@@ -416,90 +404,165 @@ def project_card(p, accepted_by_id):
 
 
 # --------------------------------------------------------------------------- pages
+def sidebar():
+    pubs = PUBS["publications"]
+    links = [(f"https://orcid.org/{PROFILE['orcid']}", "ORCID"), (f"https://github.com/{PROFILE['github']}", "GitHub"),
+             (f"https://github.com/{PROFILE['github_nlp']}", "GitHub · NLP"), ("/publications/", "Publications")]
+    lk = "".join(f'<li><a href="{u}"{" rel=\"noopener\"" if u.startswith("http") else ""}>{t}<span aria-hidden="true">{"↗" if u.startswith("http") else "→"}</span></a></li>' for u, t in links)
+    return f"""<aside class="side" aria-label="Profile">
+  <div class="side-id">
+    <a href="/" class="side-photo" tabindex="-1" aria-hidden="true"><picture>
+      <source type="image/webp" srcset="/assets/img/portrait-320.webp 320w, /assets/img/portrait-640.webp 640w" sizes="168px">
+      <img src="/assets/img/portrait-640.jpg" width="640" height="640" alt="">
+    </picture></a>
+    <div>
+      <p class="side-name">{e(PROFILE['short_name'])}</p>
+      <p class="side-title">PhD Candidate</p>
+      <p class="side-sub">AI · Optimisation · HPC · Arabic NLP</p>
+    </div>
+  </div>
+  <details class="side-more" open>
+    <summary>Details and links</summary>
+    <dl class="side-dl">
+      <div><dt>Location</dt><dd>{e(PROFILE['location'])}</dd></div>
+      <div><dt>Email</dt><dd><a href="mailto:{PROFILE['email']}">{e(PROFILE['email'])}</a></dd></div>
+      <div><dt>Ph.D.</dt><dd>Since Oct 2024</dd></div>
+      <div><dt>Lecturer</dt><dd>Univ. of the Holy Quran &amp; Islamic Sciences</dd></div>
+    </dl>
+    <ul class="side-links">{lk}</ul>
+    <p class="side-stats"><b>{len(pubs)}</b> publications<br><b>{len(PUBS['accepted'])}</b> accepted · <b>{len(PUBS.get('under_consideration', []))}</b> under consideration</p>
+  </details>
+</aside>"""
+
+
 def home():
     pubs = PUBS["publications"]
-    n_pub, n_j = len(pubs), sum(1 for p in pubs if p["type"] == "journal")
-    n_c = n_pub - n_j
-    n_acc = len(PUBS["accepted"])
-    n_first = sum(1 for p in pubs if p["role"] == "first-author")
-    head = " <span aria-hidden='true'>·</span> ".join(e(h) for h in PROFILE["headline"])
-    selected_ids = ["abdalsalam2025towards", "mahmoud2026mtagec", "abdalsalam2024bigru", "alsayed2026attention"]
-    selected = "".join(pub_card(next(p for p in pubs if p["id"] == i), compact=True) for i in selected_ids)
-    featured = [p for p in PROJ["projects"] if p["featured"]][:4]
-    proj_tiles = "".join(f"""<a class="mini-proj t{TOPIC_SLOT[p['area']]}" href="https://github.com/{e(p['repo'])}" rel="noopener">
-<span class="mini-area">{e(TOPICS[p['area']])}</span><span class="mini-name">{e(p['name'])}</span><span class="mini-status">{e(p['status'])}</span></a>""" for p in featured)
-    areas = [
-        ("maritime-hpc", "Maritime AI & optimisation", "Multi-objective ship weather routing with NSGA-II, SPEA2 and MOEA/D, accelerated with OpenMP and CUDA."),
-        ("maritime-hpc", "Scientific machine learning", "Neural surrogates that replace slow ship-performance simulation inside optimisation loops."),
-        ("arabic-nlp", "Low-resource Arabic NLP", "Sudanese Arabic dialect identification, LLM-assisted annotation and harmful-language detection."),
-        ("arabic-nlp", "Arabic language technologies", "Handwritten character recognition (CNN, CNN–KAN) and grammatical error correction."),
+    allp = {p["id"]: p for p in pubs + PUBS["accepted"]}
+    first_sentence = lambda s: s.split(". ")[0].rstrip(".") + "."
+
+    rows = [
+        ("Ship weather routing &amp; HPC", "Multi-objective evolutionary algorithms (NSGA-II, SPEA2, MOEA/D) for routing ships through changing weather, accelerated with OpenMP, CUDA and hybrid CPU–GPU execution.", "https://doi.org/10.12716/1001.19.01.12", "Paper"),
+        ("Machine-learning surrogates", "Neural surrogates that replace a slow ship-performance simulator inside the optimiser, with feasibility classifiers and safety-biased errors.", "https://github.com/MOHAMMED-ABDALSALAM-PG/S175-ML-surrogate", "Code"),
+        ("Large-scale vehicle routing", "Collaboration with Prof. Daniele Vigo and Dr. Luca Accorsi: integrating their FILO2 heuristic with PMOO for multi-objective routing.", "/research/#filo2", "Overview"),
+        ("Low-resource Arabic NLP", "Sudanese Arabic corpora, LLM-assisted annotation, harmful-language detection and dialect identification with BERT models and LLMs.", "/publications/#accepted", "Papers"),
+        ("Arabic language technologies", "Handwritten character recognition (CNN, CNN–KAN) and multi-task grammatical error correction, as co-author.", "/publications/?topic=arabic-nlp", "Papers"),
+        ("Security-event analytics", "Text and tabular fusion for classifying and attributing events in the Global Terrorism Database.", "https://doi.org/10.7717/peerj-cs.2252", "Paper"),
     ]
-    area_cards = "".join(f'<li class="area t{TOPIC_SLOT[t]}"><h3>{e(h)}</h3><p>{e(d)}</p></li>' for t, h, d in areas)
+    prof = "".join(f'<li><h3>{t}</h3><p>{d}</p><a href="{u}"{" rel=\"noopener\"" if u.startswith("http") else ""}>{l} →</a></li>' for t, d, u, l in rows)
+
+    chips = ["Python", "C/C++", "CUDA", "OpenMP", "MPI", "PyTorch", "scikit-learn", "LaTeX", "Git"]
+    chip_html = "".join(f"<li>{e(c)}</li>" for c in chips)
+
+    cards_spec = [
+        ("MOHAMMED-ABDALSALAM-PG/PMOO-V1", "pmoo", "Population → OpenMP / CUDA → Pareto front", "Parallel computing · Optimisation"),
+        ("MOHAMMED-ABDALSALAM-PG/S175-ML-surrogate", "s175", "Inputs → feasibility → regression → outputs", "Scientific machine learning"),
+        ("scander91/sudanese-hate-speech-detection", "hate", "Collect → normalise → label → train → explain", "Arabic NLP"),
+        ("scander91/arabic-dialect-BERT-LLM", "dialect", "Text → BERT | LLM → dialect", "Arabic NLP"),
+        ("MOHAMMED-ABDALSALAM-PG/SWR-HPC-systematic-review", "swr", "Search → deduplicate → screen → include", "Systematic review"),
+        ("scander91/Intelligent-Fusion-of-Heterogeneous-Data-for-Terrorist-Organization", "fusion", "Text + attributes → fusion → class", "Security analytics"),
+    ]
+    projs = {p["repo"]: p for p in PROJ["projects"]}
+    cards = ""
+    for repo, fig, pipe, area in cards_spec:
+        p = projs[repo]
+        desc = ". ".join(p["description"].split(". ")[:1]).rstrip(".") + "."
+        cards += f"""<article class="sw-card">
+  <p class="eyebrow">{e(area)}</p>
+  <h3>{e(p['short'])}</h3>
+  <p>{e(desc)}</p>
+  <div class="sw-fig">{figures.card_figure(fig)}</div>
+  <p class="mono-line">{e(pipe)}</p>
+  <p class="mono-line dim">{e(p['status'])}</p>
+  <p class="sw-links"><a href="https://github.com/{e(repo)}" rel="noopener">Code</a><a href="/projects/">Details</a></p>
+</article>"""
+
+    hl_ids = ["abdalsalam2025towards", "abdalsalam2026hate", "abdalsalam2024bigru", "abdalsalam2024textual"]
+    hl = ""
+    for i in hl_ids:
+        p = allp[i]
+        links = []
+        if p.get("open_access_url"):
+            links.append(f'<a href="{e(p["open_access_url"])}" rel="noopener">Paper</a>')
+        if p.get("doi"):
+            links.append(f'<a href="https://doi.org/{e(p["doi"])}" rel="noopener">DOI</a>')
+        if p.get("code_url"):
+            links.append(f'<a href="{e(p["code_url"])}" rel="noopener">Code</a>')
+        venue = e(p["venue"]) + (", " + e(p["details"]) if p.get("details") else "")
+        status = "" if p["status"] == "published" else f' · <span class="st">{e(p.get("status_label", ""))}</span>'
+        hl += f"""<li><span class="yr">{p['year']}</span><div>
+  <h3>{e(p['title'])}</h3>
+  <p class="au">{authors_html(p['authors'])}</p>
+  <p class="ve"><em>{venue}</em>{status}</p>
+  <p class="su">{e(first_sentence(p['summary']))}</p>
+  <p class="hl-links">{''.join(links)}</p></div></li>"""
+
+    rec = [
+        ("Appointment", "University Lecturer", "University of the Holy Quran and Islamic Sciences, Sudan · Nov 2016–present"),
+        ("Ph.D.", "Information and Communication Technology", f"{PROFILE['affiliation']} · since Oct 2024"),
+        ("Research", "Research Assistant", "Wuhan University of Technology & Sudan University of Science and Technology · 2018–2024"),
+        ("M.Sc.", "Information Technology (First Class)", "University of Madras, India · 2015"),
+        ("B.Sc.", "Information Technology", "Al-Zaeim Al-Azhari University, Sudan · 2012"),
+        ("Fellowship", "Polonium International Doctoral Fellowship · NAWA PROM", "Excellence Initiative – Research University (IDUB)"),
+        ("Talks", "TransNav 2025 · AICS 2019", "Gdynia, Poland · Hubei, China"),
+        ("Teaching", "Lecturer in computer science since 2015", "Cambridge International College and other Sudanese colleges · 2015–2019"),
+    ]
+    rec_html = "".join(f'<li><span class="lbl">{e(a)}</span><div><h3>{e(b)}</h3><p>{e(c)}</p></div></li>' for a, b, c in rec)
+
     body = f"""
-<section class="hero">
-  <div class="hero-bg" aria-hidden="true"></div>
-  <div class="wrap hero-inner">
-    <div class="hero-text">
-      <p class="eyebrow">PhD Candidate, {e(PROFILE['affiliation'])} · {e(PROFILE['employer_role'])}, {e(PROFILE['employer'])}</p>
-      <h1>{e(PROFILE['name'])}</h1>
-      <p class="headline">{head}</p>
-      <p class="intro">{e(PROFILE['intro'])}</p>
-      <ul class="hero-links">
-        <li><a class="btn primary" href="/publications/">{icon('doc')}Publications</a></li>
-        <li><a class="btn" href="https://github.com/{PROFILE['github']}" rel="noopener">{icon('github')}GitHub</a></li>
-        <li><a class="btn" href="https://orcid.org/{PROFILE['orcid']}" rel="noopener">{icon('orcid')}ORCID</a></li>
-        <li><a class="btn" href="mailto:{PROFILE['email']}">{icon('mail')}Email</a></li>
-      </ul>
-    </div>
-    <div class="portrait">
-      <picture>
-        <source type="image/webp" srcset="/assets/img/portrait-320.webp 320w, /assets/img/portrait-640.webp 640w, /assets/img/portrait-960.webp 960w" sizes="(max-width: 760px) 220px, 320px">
-        <img src="/assets/img/portrait-640.jpg" width="640" height="640" alt="Portrait of {e(PROFILE['name'])}" fetchpriority="high">
-      </picture>
-    </div>
+<section class="intro-block">
+  <p class="eyebrow">PhD Candidate · AI &amp; HPC Researcher</p>
+  <h1>Fast multi-objective optimisation for ships at sea, and AI for low-resource Arabic.</h1>
+  <p>I design algorithms that make hard decisions computable. My doctoral research builds multi-objective evolutionary optimisers and machine-learning surrogates for ship weather routing, and accelerates them on multi-core CPUs and GPUs.</p>
+  <p>In parallel, I build data and models for Sudanese Arabic, where labelled data are scarce: corpora, LLM-assisted annotation, harmful-language detection and dialect identification. I have taught computer science at university level since 2015.</p>
+  <p class="note"><span class="pulse" aria-hidden="true"></span>Open to research collaborations in optimisation, HPC and Arabic NLP</p>
+  <p class="jump"><a href="#lab">Try the interactive demo ↘</a><a href="/publications/">Browse all publications</a><a href="/projects/">Explore research software</a><a href="#contact">Get in touch</a></p>
+</section>
+
+<section class="block" id="lab" aria-labelledby="lab-h">
+  <div class="block-head"><div><p class="eyebrow">Interactive routing lab</p><h2 id="lab-h">Weather routing in motion.</h2></div><a href="/research/#maritime">Explore the research ↗</a></div>
+  <p class="block-lede">Make the storm stronger, choose what matters most, and watch the ship change its route and speed.</p>
+  <div id="routing-lab" class="lab"><noscript>{figures.routing_scene()}</noscript></div>
+  <p class="mono-line dim">Illustrative model, not the research code · 9 paths × 5 speeds · objectives: time, fuel, highest wave met</p>
+</section>
+
+<section class="block" aria-labelledby="prof-h">
+  <div class="block-head"><div><p class="eyebrow">Research profile</p><h2 id="prof-h">From ocean routes to Arabic dialects.</h2></div><a href="/research/">Research overview →</a></div>
+  <p class="block-lede">One thread runs through the work: methods that are fast, honest about uncertainty, and tested against real constraints.</p>
+  <ul class="prof-rows">{prof}</ul>
+</section>
+
+<section class="block" aria-labelledby="bring-h">
+  <p class="eyebrow">What I bring</p><h2 id="bring-h">Research that runs, end to end.</h2>
+  <div class="bring">
+    <div><h3>End-to-end research</h3><p>Problem framing, algorithm design, experiments with fixed protocols, statistics, papers and reproducibility packages.</p></div>
+    <div><h3>Parallel computing</h3><p>OpenMP, CUDA and hybrid CPU–GPU implementations, benchmarked fairly against serial baselines.</p></div>
+    <div><h3>Teaching and communication</h3><p>University lecturer since 2015, international collaborations, and clear explanation of technical results.</p></div>
   </div>
+  <ul class="chips-mono">{chip_html}</ul>
 </section>
 
-<section class="facts wrap" aria-label="Publication record">
-  <dl>
-    <div><dt>Published papers</dt><dd>{n_pub}</dd><span>{n_j} journal · {n_c} conference</span></div>
-    <div><dt>First-author papers</dt><dd>{n_first}</dd><span>of {n_pub} published</span></div>
-    <div><dt>Accepted, forthcoming</dt><dd>{n_acc}</dd><span>+ {len(PUBS.get('under_consideration', []))} under consideration</span></div>
-    <div><dt>Teaching since</dt><dd>2015</dd><span>University lecturer in computer science</span></div>
-  </dl>
+<section class="block" aria-labelledby="sw-h">
+  <div class="block-head"><div><p class="eyebrow">Research software</p><h2 id="sw-h">From papers to working code.</h2></div><a href="/projects/">All software &amp; data →</a></div>
+  <div class="sw-grid">{cards}</div>
 </section>
 
-<section class="wrap section">
-  <div class="section-head"><h2>My PhD work in one picture</h2><a class="more" href="/research/">Read more →</a></div>
-  <p class="lede-sm">Planning a ship's route through changing weather, and making the computation fast enough to be useful.</p>
-  {figures.overview_story()}
+<section class="block" aria-labelledby="hl-h">
+  <div class="block-head"><div><p class="eyebrow">First-author highlights</p><h2 id="hl-h">Selected papers.</h2></div><a href="/publications/">All publications →</a></div>
+  <ol class="hl">{hl}</ol>
 </section>
 
-<section class="wrap section">
-  <div class="section-head"><h2>Research directions</h2><a class="more" href="/research/">Research overview →</a></div>
-  <ul class="areas">{area_cards}</ul>
+<section class="block" aria-labelledby="rec-h">
+  <p class="eyebrow">Professional record</p><h2 id="rec-h">Experience and education.</h2>
+  <ul class="rec">{rec_html}</ul>
 </section>
 
-<section class="wrap section two-col">
-  <div>
-    <div class="section-head"><h2>Selected publications</h2><a class="more" href="/publications/">All {n_pub} papers →</a></div>
-    <div class="pub-list compact">{selected}</div>
-  </div>
-  <div>{chart_pubs_by_year(pubs, 'chart-years-home')}</div>
-</section>
-
-<section class="wrap section">
-  <div class="section-head"><h2>Research software</h2><a class="more" href="/projects/">Software, datasets & models →</a></div>
-  <div class="mini-grid">{proj_tiles}</div>
-</section>
-
-<section class="wrap section contact-band">
-  <h2>Contact</h2>
-  <p>For research collaboration, dataset enquiries or academic correspondence, write to <a href="mailto:{PROFILE['email']}">{e(PROFILE['email'])}</a>.</p>
-  <p class="muted">PhD candidate at {e(PROFILE['affiliation'])}, {e(PROFILE['location'])}</p>
+<section class="block" id="contact" aria-labelledby="ct-h">
+  <p class="eyebrow">Contact</p><h2 id="ct-h">Let's work together.</h2>
+  <p class="block-lede">I welcome conversations about research collaboration, datasets, and academic positions.</p>
+  <p><a class="mail-big" href="mailto:{PROFILE['email']}">{e(PROFILE['email'])} →</a></p>
 </section>"""
-    desc = f"{PROFILE['name']} — PhD candidate at Gdańsk University of Technology researching multi-objective optimisation, HPC for ship weather routing, and low-resource Arabic NLP."
-    return page("/", f"{PROFILE['name']} — AI Researcher", desc, body)
+    return page("/", PROFILE["name"], "Mohammed Abdalsalam, PhD candidate: multi-objective ship weather routing, parallel optimisation on CPUs and GPUs, machine-learning surrogates, and Sudanese Arabic NLP.",
+                body, extra_head='<script src="/assets/js/routing-lab.js" defer></script>')
 
 
 def research():
