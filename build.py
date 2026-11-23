@@ -686,7 +686,7 @@ def research():
     body = f"""<section class="wrap page-head"><p class="eyebrow">Research</p><h1>Algorithms, computing and language</h1>
 <p class="lede">My current research area, multi-objective weather routing optimisation using AI techniques and parallel acceleration, connects evolutionary optimisation, machine learning and parallel computing. Alongside it, I build data and models for low-resource Arabic.</p>
 <nav class="toc" aria-label="Research areas"><ul>{toc}</ul></nav></section>
-<section class="wrap"><h2 class="story-h">The big picture</h2>{figures.overview_story()}</section>
+<section class="wrap"><h2 class="story-h">Research Framework</h2>{figures.overview_story()}</section>
 <div class="wrap">{''.join(blocks)}</div>"""
     return page("/research/", "Research", "Research directions of Mohammed Abdalsalam: ship weather routing, parallel multi-objective optimisation, ML surrogates, and low-resource Arabic NLP.", body)
 
