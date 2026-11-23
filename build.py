@@ -537,8 +537,8 @@ def home():
   <p class="su">{e(first_sentence(p['summary']))}</p>
   <p class="hl-links">{''.join(links)}</p></div></li>"""
 
-    data_stats = "".join(f'<li><a href="/data/#{d["id"]}"><span class="ds-ic">{datapage.html_icon(d["icon"], 20)}</span><b>{d["big"]}</b><span class="u">{d["unit"]}</span><span class="n">{e(d["name"].replace("Sudanese Arabic ", ""))}</span></a></li>' for d in datapage.DATASETS)
-    src_chips = "".join(f'<li class="{c}">{datapage.html_icon(g, 16)}<span>{e(t)}</span></li>' for g, c, t, _ in datapage.COLLECT) + f'<li class="eth">{datapage.html_icon("shield", 16)}<span>Ethics &amp; privacy by design</span></li>'
+    data_stats = "".join(f'<li class="{d["slot"]}"><a href="/data/#{d["id"]}"><span class="ds-ic">{datapage.ds_icon(d["icon"], 30)}</span><b>{d["big"]}</b><span class="u">{d["unit"]}</span><span class="n">{e(d["name"].replace("Sudanese ", ""))}</span><span class="from">{"".join(datapage.brand(k, 16) for k in d["sources"])}</span></a></li>' for d in datapage.DATASETS)
+    src_chips = "".join(f'<li class="{c}">{datapage.brand(g, 18)}<span>{e(t)}</span></li>' for g, c, t, _ in datapage.COLLECT) + f'<li class="eth">{datapage.html_icon("shield", 16)}<span>Ethics &amp; privacy by design</span></li>'
 
     rec = [
         ("Appointment", "University Lecturer", "University of the Holy Quran and Islamic Sciences, Sudan · Nov 2016–present"),
@@ -591,7 +591,7 @@ def home():
 </section>
 
 <section class="block" aria-labelledby="data-h">
-  <div class="block-head"><div><p class="eyebrow">Sudanese Arabic data</p><h2 id="data-h">Data built for a low-resource dialect.</h2></div><a href="/data/">Datasets &amp; ethics →</a></div>
+  <div class="block-head"><div><p class="eyebrow">Low-resource Sudanese dialect</p><h2 id="data-h">Datasets for the Sudanese dialect.</h2></div><a href="/data/">Datasets &amp; ethics →</a></div>
   <p class="block-lede">Corpora and labelled datasets collected from public posts and app reviews, with personal details removed and labels shared openly where the platforms allow.</p>
   <ul class="ds-stats">{data_stats}</ul>
   <ul class="src-chips">{src_chips}</ul>
@@ -766,8 +766,8 @@ def projects():
 def data():
     cards = "".join(datapage.dataset_card(d, PROFILE["email"]) for d in datapage.DATASETS)
     src, eth = datapage.collect_html()
-    body = f"""<section class="wrap page-head"><p class="eyebrow">Data</p><h1>Sudanese Arabic datasets</h1>
-<p class="lede">Sudanese Arabic has very few labelled resources. I build them from public social-media posts and app reviews: a large dialect corpus, a hate-speech dataset and a sentiment dataset of customer reviews, together with the collectors and cleaning steps that produce them.</p></section>
+    body = f"""<section class="wrap page-head"><p class="eyebrow">Data</p><h1>Low-resource Sudanese dialect datasets</h1>
+<p class="lede">The Sudanese dialect is a low-resource language variety with very few labelled resources. I build them from public social-media posts and app reviews: a large dialect corpus, a hate-speech dataset and a sentiment dataset of customer reviews, together with the collectors and cleaning steps that produce them.</p></section>
 <section class="wrap">{datapage.overview_figure()}</section>
 <section class="wrap" aria-labelledby="ds-h"><h2 id="ds-h" class="block-h">Datasets</h2><div class="ds-grid">{cards}</div></section>
 <section class="wrap" aria-labelledby="src-h"><h2 id="src-h" class="block-h">Where the data come from</h2>
@@ -775,7 +775,7 @@ def data():
 <section class="wrap" aria-labelledby="eth-h"><h2 id="eth-h" class="block-h">Ethics and regulation</h2><ul class="eth-list">{eth}</ul></section>
 <section class="wrap section contact-band" id="request"><h2>Requests and collaboration</h2>
 <p>For dataset access, research collaboration or commercial use of the sentiment data, email <a href="mailto:{PROFILE['email']}?subject=Sudanese%20Arabic%20datasets">{e(PROFILE['email'])}</a>.</p></section>"""
-    return page("/data/", "Data", "Sudanese Arabic datasets by Mohammed Abdalsalam: a 6.76-million-sentence dialect corpus, a 40,000-sentence hate-speech dataset and a 13,293-review sentiment dataset, with data collection and ethics.", body)
+    return page("/data/", "Data", "Low-resource Sudanese dialect datasets by Mohammed Abdalsalam: a 6.76-million-sentence dialect corpus, a 40,000-sentence hate-speech dataset and a 13,293-review sentiment dataset, with data collection and ethics.", body)
 
 
 def about():

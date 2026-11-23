@@ -636,3 +636,24 @@ nav a, .lab-btn, .lab-tab, .lab-pref, .nav-toggle { font-style: normal; }
 .src-ic, .eth-ic { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; flex: none; }
 .src-ic { background: color-mix(in srgb, var(--c) 15%, var(--card)); color: var(--c); }
 .eth-ic { background: var(--accent-soft); color: var(--accent); }
+
+/* Data: platform marks, dataset colours, richer cards */
+.brand { flex: none; display: inline-block; vertical-align: -4px; border-radius: 6px; }
+.ds-card { border-top-color: var(--c, var(--series-3)); position: relative; overflow: hidden; }
+.ds-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 120px; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 12%, transparent), transparent); pointer-events: none; }
+.ds-card > * { position: relative; }
+.ds-card .ds-ic, .ds-stats .ds-ic { width: 52px; height: 52px; border-radius: 14px; background: color-mix(in srgb, var(--c, var(--series-3)) 16%, var(--card)); border: 1px solid color-mix(in srgb, var(--c, var(--series-3)) 40%, var(--line)); box-shadow: 0 4px 14px color-mix(in srgb, var(--c, var(--series-3)) 18%, transparent); }
+.ds-card h3 { font-size: 1.1rem; }
+.ds-card .kind { color: var(--c); }
+.ds-src { list-style: none; padding: 0; margin: 0 0 .6rem; display: flex; flex-wrap: wrap; gap: .4rem; }
+.ds-src li { display: inline-flex; align-items: center; gap: .4rem; font-size: .8rem; font-weight: 600; padding: .22rem .6rem .22rem .3rem; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); color: var(--ink); }
+.ds-stats li { --c: var(--series-3); }
+.ds-stats li.s1 { --c: var(--series-1); } .ds-stats li.s2 { --c: var(--series-2); } .ds-stats li.s3 { --c: var(--series-3); }
+.ds-stats a { border-left-color: var(--c); grid-template-columns: auto 1fr auto; background: linear-gradient(90deg, color-mix(in srgb, var(--c) 9%, var(--card)), var(--card) 70%); }
+.ds-stats a:hover { border-color: var(--c); box-shadow: var(--shadow); }
+.ds-stats .from { grid-column: 3; grid-row: 1 / 4; display: flex; flex-direction: column; gap: .3rem; align-self: center; }
+.src-list li { transition: transform .15s, box-shadow .15s; }
+.src-list li:hover, .eth-list li:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.src-list .src-ic { width: 48px; height: 48px; background: var(--surface-2); border: 1px solid var(--line); }
+.src-chips li { padding-left: .3rem; }
+.eth-list li { border-left: 3px solid var(--accent); }
