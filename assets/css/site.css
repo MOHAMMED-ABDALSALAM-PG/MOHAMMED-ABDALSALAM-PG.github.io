@@ -680,3 +680,7 @@ nav a, .lab-btn, .lab-tab, .lab-pref, .nav-toggle { font-style: normal; }
 .nt li { color: var(--ink-2); font-size: .93rem; margin-bottom: .55rem; }
 .nt li::marker { color: var(--c); }
 .nt li b { color: var(--ink); }
+
+.bio { max-width: 74ch; }
+.bio p { color: var(--ink-2); font-size: 1rem; line-height: 1.7; margin: 0 0 1rem; }
+.bio p:first-child { color: var(--ink); font-size: 1.05rem; }

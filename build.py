@@ -455,7 +455,7 @@ def sidebar():
     </picture></a>
     <div>
       <p class="side-name">{e(PROFILE['short_name'])}</p>
-      <p class="side-title">PhD Student</p>
+      <p class="side-title">PhD Candidate</p>
       <p class="side-sub">AI &amp; HPC Researcher</p>
     </div>
   </div>
@@ -542,7 +542,7 @@ def home():
 
     rec = [
         ("Appointment", "University Lecturer", "University of the Holy Quran and Islamic Sciences, Sudan · Nov 2016–present"),
-        ("Ph.D.", "PhD Student", ""),
+        ("Ph.D.", "PhD Candidate", ""),
         ("Research", "Research Assistant", "Wuhan University of Technology & Sudan University of Science and Technology · 2018–2024"),
         ("M.Sc.", "Information Technology (First Class)", "University of Madras, India · 2015"),
         ("B.Sc.", "Information Technology", "Al-Zaeim Al-Azhari University, Sudan · 2012"),
@@ -554,7 +554,7 @@ def home():
 
     body = f"""
 <section class="intro-block">
-  <p class="eyebrow">PhD Student · AI &amp; HPC Researcher</p>
+  <p class="eyebrow">PhD Candidate · AI &amp; HPC Researcher</p>
   <h1>HPC-based multi-objective optimisation for ships at sea.</h1>
   <p>I design algorithms that make hard decisions computable. My doctoral research builds multi-objective evolutionary optimisers and machine-learning surrogates for ship weather routing, and accelerates them on multi-core CPUs and GPUs.</p>
   <p>In parallel, I build data and models for Sudanese Arabic, where labelled data are scarce: corpora, LLM-assisted annotation, harmful-language detection and dialect identification. I have taught computer science at university level since 2015.</p>
@@ -612,7 +612,7 @@ def home():
   <p class="block-lede">I welcome conversations about research collaboration, datasets, and academic positions.</p>
   <p><a class="mail-big" href="mailto:{PROFILE['email']}">{e(PROFILE['email'])} →</a></p>
 </section>"""
-    return page("/", PROFILE["name"], "Mohammed Abdalsalam, PhD student: multi-objective ship weather routing, parallel optimisation on CPUs and GPUs, machine-learning surrogates, and Sudanese Arabic NLP.",
+    return page("/", PROFILE["name"], "Mohammed Abdalsalam, PhD candidate: multi-objective ship weather routing, parallel optimisation on CPUs and GPUs, machine-learning surrogates, and Sudanese Arabic NLP.",
                 body, extra_head='<script src="/assets/js/routing-lab.js" defer></script>')
 
 
@@ -784,21 +784,11 @@ def about():
     skills = "".join(f"""<div class="skill-group"><h3>{e(s['group'])}</h3><ul>{''.join('<li>' + e(i) + '</li>' for i in s['items'])}</ul></div>""" for s in PROFILE["skills"])
     lst = lambda xs: "".join(f"<li>{e(x)}</li>" for x in xs)
     body = f"""<section class="wrap page-head"><p class="eyebrow">About</p><h1>Background</h1>
-<p class="lede">I am a PhD student in Information and Communication Technology. I work on AI and high-performance computing for multi-objective optimisation, and on language technology for the low-resource Sudanese dialect.</p></section>
-<div class="wrap now-then">
-  <section class="nt now" aria-labelledby="now-h"><p class="nt-tag">Now</p><h2 id="now-h">What I am doing</h2><ul>
-    <li><b>PhD research.</b> Multi-objective ship weather routing with evolutionary algorithms (NSGA-II, SPEA2, MOEA/D), accelerated with OpenMP, CUDA and hybrid CPU–GPU execution, and machine-learning surrogates of the S175 ship-performance simulator.</li>
-    <li><b>Large-scale vehicle routing.</b> Collaboration with Prof. Daniele Vigo and Dr. Luca Accorsi on integrating their FILO2 heuristic with PMOO.</li>
-    <li><b>Sudanese dialect NLP.</b> Datasets, hate-speech detection, dialect identification and sentiment analysis with BERT models and large language models.</li>
-    <li><b>Teaching.</b> University Lecturer at the University of the Holy Quran and Islamic Sciences, Sudan (since 2016).</li>
-  </ul></section>
-  <section class="nt then" aria-labelledby="then-h"><p class="nt-tag">Before</p><h2 id="then-h">What I did previously</h2><ul>
-    <li><b>2018 – 2024 · Research Assistant,</b> Wuhan University of Technology (China) and Sudan University of Science and Technology: deep-learning models (CNN, BiGRU, self-attention) for classifying Global Terrorism Database events.</li>
-    <li><b>2015 – 2019 · Lecturer</b> at several Sudanese colleges: computer science and engineering courses, curricula and assessments.</li>
-    <li><b>2013 – 2015 · MSc in Information Technology (First Class),</b> University of Madras, India.</li>
-    <li><b>2012 · BSc in Information Technology,</b> Al-Zaeim Al-Azhari University, Sudan.</li>
-  </ul></section>
-</div>
+<div class="bio">
+<p>I am a PhD candidate in Information and Communication Technology. My research develops multi-objective evolutionary algorithms (NSGA-II, SPEA2, MOEA/D) for ship weather routing, accelerated with OpenMP, CUDA and hybrid CPU–GPU execution, together with machine-learning surrogates of the S175 ship-performance simulator. In collaboration with Prof. Daniele Vigo and Dr. Luca Accorsi, I am integrating their FILO2 heuristic for very large vehicle-routing problems into this parallel multi-objective framework (PMOO).</p>
+<p>In parallel, I work on language technology for the low-resource Sudanese dialect, building datasets and models for hate-speech detection, dialect identification and sentiment analysis with BERT models and large language models.</p>
+<p>I have taught computer science since 2015 and have been a University Lecturer at the University of the Holy Quran and Islamic Sciences, Sudan, since 2016. From 2018 to 2024 I was a research assistant with Wuhan University of Technology (China) and Sudan University of Science and Technology, developing deep-learning models (CNN, BiGRU, self-attention) for classifying Global Terrorism Database events. I hold an MSc in Information Technology (First Class) from the University of Madras, India, and a BSc in Information Technology from Al-Zaeim Al-Azhari University, Sudan.</p>
+</div></section>
 <div class="wrap about-grid">
   <section aria-labelledby="edu-h"><h2 id="edu-h" class="block-h">Education</h2><ol class="timeline">{edu}</ol></section>
   <section aria-labelledby="exp-h"><h2 id="exp-h" class="block-h">Professional experience</h2><ol class="timeline">{exp}</ol></section>
@@ -813,7 +803,7 @@ def about():
 </div>
 <section class="wrap section contact-band" id="contact"><h2>Contact</h2>
 <p>Email: <a href="mailto:{PROFILE['email']}">{e(PROFILE['email'])}</a></p>
-<p class="muted">PhD student · ORCID <a href="https://orcid.org/{PROFILE['orcid']}">{PROFILE['orcid']}</a></p></section>"""
+<p class="muted">PhD candidate · ORCID <a href="https://orcid.org/{PROFILE['orcid']}">{PROFILE['orcid']}</a></p></section>"""
     return page("/about/", "About", "Education, research and teaching experience, and skills of Mohammed Abdalsalam.", body)
 
 
