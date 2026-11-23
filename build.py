@@ -432,9 +432,12 @@ def sidebar():
     <div>
       <p class="side-name">{e(PROFILE['short_name'])}</p>
       <p class="side-title">PhD Candidate</p>
-      <p class="side-sub">AI · Optimisation · HPC · Arabic NLP</p>
+      <p class="side-sub">AI &amp; HPC Researcher</p>
     </div>
   </div>
+  <div class="side-int"><p class="side-h">Areas of interest</p><ul>
+    <li>Multi-objective optimisation</li><li>High-performance computing</li><li>Ship weather routing</li>
+    <li>Machine-learning surrogates</li><li>Low-resource Arabic NLP</li></ul></div>
   <details class="side-more" open>
     <summary>Details and links</summary>
     <dl class="side-dl">
@@ -526,7 +529,7 @@ def home():
     body = f"""
 <section class="intro-block">
   <p class="eyebrow">PhD Candidate · AI &amp; HPC Researcher</p>
-  <h1>HPC-based multi-objective optimisation for ships at sea, and AI for low-resource Arabic.</h1>
+  <h1>HPC-based multi-objective optimisation for ships at sea.</h1>
   <p>I design algorithms that make hard decisions computable. My doctoral research builds multi-objective evolutionary optimisers and machine-learning surrogates for ship weather routing, and accelerates them on multi-core CPUs and GPUs.</p>
   <p>In parallel, I build data and models for Sudanese Arabic, where labelled data are scarce: corpora, LLM-assisted annotation, harmful-language detection and dialect identification. I have taught computer science at university level since 2015.</p>
   <p class="note"><span class="pulse" aria-hidden="true"></span>Open to research collaborations in optimisation, HPC and Arabic NLP</p>
