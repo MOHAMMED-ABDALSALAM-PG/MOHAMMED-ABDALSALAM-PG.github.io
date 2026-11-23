@@ -164,7 +164,7 @@ nav a[aria-current="page"] { color: var(--accent-ink); background: var(--accent-
 .accepted-list .pub { border-style: dashed; }
 .year-group { display: flex; flex-direction: column; gap: .9rem; }
 .year-h { font-size: 1.15rem; color: var(--muted); margin: 1.4rem 0 .1rem; border-bottom: 1px solid var(--line); padding-bottom: .35rem; }
-@media (max-width: 600px) { .pub { grid-template-columns: 1fr; } .pub-year { display: none; } }
+@media (max-width: 600px) { .pub, .compact .pub { grid-template-columns: 1fr; gap: 0; padding: 1rem 1.05rem; } .pub-year { display: none; } .pub-title { font-size: 1.02rem; } }
 
 .page-head { padding: 3rem 0 1.5rem; }
 .lede { font-size: 1.1rem; color: var(--ink-2); max-width: 75ch; }
@@ -211,6 +211,7 @@ nav a[aria-current="page"] { color: var(--accent-ink); background: var(--accent-
 .sw { width: 11px; height: 11px; border-radius: 3px; background: var(--c); display: inline-block; }
 .table-view { margin-top: .5rem; font-size: .86rem; }
 .table-view summary { cursor: pointer; color: var(--accent-ink); font-weight: 600; }
+.table-view { max-width: 100%; overflow-x: auto; }
 .table-view table { border-collapse: collapse; margin-top: .5rem; width: 100%; }
 .table-view th, .table-view td { border-bottom: 1px solid var(--line); padding: .3rem .5rem; text-align: left; }
 .table-view td { font-variant-numeric: tabular-nums; }
@@ -312,3 +313,6 @@ ul.plain li { margin-bottom: .45rem; }
 .timeline p { font-size: .93rem; color: var(--ink-2); }
 .skills + .muted { margin-top: .9rem; }
 .credit { font-size: .88rem; color: var(--ink-2); background: var(--surface-2); border-left: 3px solid var(--accent); padding: .45rem .7rem; border-radius: 0 8px 8px 0; }
+
+/* Small screens: let long addresses and URLs wrap instead of widening the page */
+a[href^="mailto:"], .pub-links a, .site-footer a { overflow-wrap: anywhere; }
