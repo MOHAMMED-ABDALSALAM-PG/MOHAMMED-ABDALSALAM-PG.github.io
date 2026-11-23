@@ -85,7 +85,7 @@ def page(path, title, description, body, extra_head=""):
     }
     full_title = title if path == "/" else f"{title} · {PROFILE['short_name']}"
     return f"""<!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
