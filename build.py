@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import figures
+import datapage
 
 figures.PAPER_FIG.update({"abdalsalam_pmoo": "pmoo", "abdalsalam_s175": "s175", "abdalsalam_swr_review": "swr", "abdalsalam_gtd_fusion": "fusion"})
 
@@ -65,7 +66,7 @@ def link_btn(url, label, ic="ext", cls="btn-link"):
     return f'<a class="{cls}" href="{e(url)}" rel="noopener" target="_blank">{icon(ic, 15)}<span>{e(label)}</span></a>'
 
 
-NAV = [("/research/", "Research"), ("/publications/", "Publications"), ("/projects/", "Software"),
+NAV = [("/research/", "Research"), ("/publications/", "Publications"), ("/projects/", "Software"), ("/data/", "Data"),
        ("/about/", "Academic"), ("/#contact", "Contact")]
 
 
@@ -536,6 +537,9 @@ def home():
   <p class="su">{e(first_sentence(p['summary']))}</p>
   <p class="hl-links">{''.join(links)}</p></div></li>"""
 
+    data_stats = "".join(f'<li><a href="/data/#{d["id"]}"><span class="ds-ic">{datapage.html_icon(d["icon"], 20)}</span><b>{d["big"]}</b><span class="u">{d["unit"]}</span><span class="n">{e(d["name"].replace("Sudanese Arabic ", ""))}</span></a></li>' for d in datapage.DATASETS)
+    src_chips = "".join(f'<li class="{c}">{datapage.html_icon(g, 16)}<span>{e(t)}</span></li>' for g, c, t, _ in datapage.COLLECT) + f'<li class="eth">{datapage.html_icon("shield", 16)}<span>Ethics &amp; privacy by design</span></li>'
+
     rec = [
         ("Appointment", "University Lecturer", "University of the Holy Quran and Islamic Sciences, Sudan · Nov 2016–present"),
         ("Ph.D.", "PhD Student", ""),
@@ -584,6 +588,13 @@ def home():
 <section class="block" aria-labelledby="sw-h">
   <div class="block-head"><div><p class="eyebrow">Research software</p><h2 id="sw-h">From papers to working code.</h2></div><a href="/projects/">All software &amp; data →</a></div>
   <div class="sw-grid">{cards}</div>
+</section>
+
+<section class="block" aria-labelledby="data-h">
+  <div class="block-head"><div><p class="eyebrow">Sudanese Arabic data</p><h2 id="data-h">Data built for a low-resource dialect.</h2></div><a href="/data/">Datasets &amp; ethics →</a></div>
+  <p class="block-lede">Corpora and labelled datasets collected from public posts and app reviews, with personal details removed and labels shared openly where the platforms allow.</p>
+  <ul class="ds-stats">{data_stats}</ul>
+  <ul class="src-chips">{src_chips}</ul>
 </section>
 
 <section class="block" aria-labelledby="hl-h">
@@ -731,7 +742,7 @@ def projects():
     cards = "".join(project_card(p, accepted) for p in featured)
     other_cards = "".join(project_card(p, accepted) for p in other)
     res = []
-    for r in RES["resources"]:
+    for r in [r for r in RES["resources"] if r["kind"] != "Dataset"]:
         avail_cls = "public" if r["public"] else "private"
         link = link_btn(r["url"], "Get the data", "data", "btn-link strong") if r.get("url") else f'<a class="btn-link" href="mailto:{PROFILE["email"]}?subject={e(r["name"])}">{icon("mail", 15)}<span>Ask by email</span></a>'
         res.append(f"""<article class="resource">
@@ -745,11 +756,26 @@ def projects():
 <p class="lede">Reproducibility packages and research code for my papers. Each card says what the code does, my role in it, and the status of the paper it belongs to. The repositories are on two GitHub accounts: <a href="https://github.com/{PROFILE['github']}">{PROFILE['github']}</a> (optimisation, HPC, maritime) and <a href="https://github.com/{PROFILE['github_nlp']}">{PROFILE['github_nlp']}</a> (NLP).</p></section>
 <section class="wrap"><h2 class="block-h">Featured projects</h2><div class="proj-grid">{cards}</div></section>
 <section class="wrap" aria-labelledby="res-h"><h2 id="res-h" class="block-h">Datasets &amp; models</h2>
-<p class="muted section-note">Resources I created for Sudanese Arabic NLP. Availability is stated exactly. Texts collected from social media are shared as identifiers and labels only.</p>
+<p class="muted section-note">Resources I created for Sudanese Arabic NLP. The three datasets (dialect corpus, hate speech, sentiment), how they were collected and the ethics rules behind them are on the <a href="/data/">Data page</a>.</p>
 <div class="res-grid">{''.join(res)}</div></section>
 <section class="wrap charts-row">{chart_s175()}</section>
 <section class="wrap"><h2 class="block-h">More research code</h2><div class="proj-grid">{other_cards}</div></section>"""
     return page("/projects/", "Software & Data", "Research software, datasets and models by Mohammed Abdalsalam: parallel multi-objective optimisation, ship-performance surrogates, and Sudanese Arabic NLP resources.", body)
+
+
+def data():
+    cards = "".join(datapage.dataset_card(d, PROFILE["email"]) for d in datapage.DATASETS)
+    src, eth = datapage.collect_html()
+    body = f"""<section class="wrap page-head"><p class="eyebrow">Data</p><h1>Sudanese Arabic datasets</h1>
+<p class="lede">Sudanese Arabic has very few labelled resources. I build them from public social-media posts and app reviews: a large dialect corpus, a hate-speech dataset and a sentiment dataset of customer reviews, together with the collectors and cleaning steps that produce them.</p></section>
+<section class="wrap">{datapage.overview_figure()}</section>
+<section class="wrap" aria-labelledby="ds-h"><h2 id="ds-h" class="block-h">Datasets</h2><div class="ds-grid">{cards}</div></section>
+<section class="wrap" aria-labelledby="src-h"><h2 id="src-h" class="block-h">Where the data come from</h2>
+<p class="muted section-note">Python data collectors for four platforms, each written for public content only.</p><ul class="src-list">{src}</ul></section>
+<section class="wrap" aria-labelledby="eth-h"><h2 id="eth-h" class="block-h">Ethics and regulation</h2><ul class="eth-list">{eth}</ul></section>
+<section class="wrap section contact-band" id="request"><h2>Requests and collaboration</h2>
+<p>For dataset access, research collaboration or commercial use of the sentiment data, email <a href="mailto:{PROFILE['email']}?subject=Sudanese%20Arabic%20datasets">{e(PROFILE['email'])}</a>.</p></section>"""
+    return page("/data/", "Data", "Sudanese Arabic datasets by Mohammed Abdalsalam: a 6.76-million-sentence dialect corpus, a 40,000-sentence hate-speech dataset and a 13,293-review sentiment dataset, with data collection and ethics.", body)
 
 
 def about():
@@ -788,14 +814,14 @@ def main():
     DIST.mkdir()
     shutil.copytree(ROOT / "assets", DIST / "assets")
     pages = {"index.html": home(), "research/index.html": research(), "publications/index.html": publications(),
-             "projects/index.html": projects(), "about/index.html": about(), "404.html": not_found()}
+             "projects/index.html": projects(), "data/index.html": data(), "about/index.html": about(), "404.html": not_found()}
     for rel, content in pages.items():
         out = DIST / rel
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(content)
     public_pubs = {k: v for k, v in PUBS.items()}
     (DIST / "publications.json").write_text(json.dumps(public_pubs, indent=1, ensure_ascii=False))
-    urls = ["/", "/research/", "/publications/", "/projects/", "/about/"]
+    urls = ["/", "/research/", "/publications/", "/projects/", "/data/", "/about/"]
     sm = "".join(f"<url><loc>{SITE}{u}</loc><lastmod>{BUILD_DATE}</lastmod></url>" for u in urls)
     (DIST / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{sm}</urlset>\n')
     (DIST / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n")
