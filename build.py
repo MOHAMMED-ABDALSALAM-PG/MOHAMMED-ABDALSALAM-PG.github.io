@@ -684,7 +684,7 @@ def research():
   {('<h3 class="refs-h">Related papers</h3>' + refs(ids)) if ids else NOTES.get(sid, '')}
 </section>""")
     body = f"""<section class="wrap page-head"><p class="eyebrow">Research</p><h1>Algorithms, computing and language</h1>
-<p class="lede">My doctoral work, <em>{e(PROFILE['dissertation'])}</em>, connects evolutionary optimisation, machine learning and parallel computing. Alongside it, I build data and models for low-resource Arabic.</p>
+<p class="lede">My current research area, multi-objective weather routing optimisation using AI techniques and parallel acceleration, connects evolutionary optimisation, machine learning and parallel computing. Alongside it, I build data and models for low-resource Arabic.</p>
 <nav class="toc" aria-label="Research areas"><ul>{toc}</ul></nav></section>
 <section class="wrap"><h2 class="story-h">The big picture</h2>{figures.overview_story()}</section>
 <div class="wrap">{''.join(blocks)}</div>"""
@@ -784,7 +784,7 @@ def about():
     skills = "".join(f"""<div class="skill-group"><h3>{e(s['group'])}</h3><ul>{''.join('<li>' + e(i) + '</li>' for i in s['items'])}</ul></div>""" for s in PROFILE["skills"])
     lst = lambda xs: "".join(f"<li>{e(x)}</li>" for x in xs)
     body = f"""<section class="wrap page-head"><p class="eyebrow">About</p><h1>Background</h1>
-<p class="lede">I am a PhD student in Information and Communication Technology, supervised by dr hab. inż. Joanna Szłapczyńska and dr hab. inż. Paweł Czarnul. Professionally, I am a University Lecturer at the University of the Holy Quran and Islamic Sciences in Sudan (since 2016), after teaching at several colleges from 2015; from 2018 to 2024 I was a research assistant with Wuhan University of Technology and Sudan University of Science and Technology.</p></section>
+<p class="lede">I am a PhD student in Information and Communication Technology. Professionally, I am a University Lecturer at the University of the Holy Quran and Islamic Sciences in Sudan (since 2016), after teaching at several colleges from 2015; from 2018 to 2024 I was a research assistant with Wuhan University of Technology and Sudan University of Science and Technology.</p></section>
 <div class="wrap about-grid">
   <section aria-labelledby="edu-h"><h2 id="edu-h" class="block-h">Education</h2><ol class="timeline">{edu}</ol></section>
   <section aria-labelledby="exp-h"><h2 id="exp-h" class="block-h">Professional experience</h2><ol class="timeline">{exp}</ol></section>

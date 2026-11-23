@@ -657,3 +657,14 @@ nav a, .lab-btn, .lab-tab, .lab-pref, .nav-toggle { font-style: normal; }
 .src-list .src-ic { width: 48px; height: 48px; background: var(--surface-2); border: 1px solid var(--line); }
 .src-chips li { padding-left: .3rem; }
 .eth-list li { border-left: 3px solid var(--accent); }
+
+/* FILO2 large-scale routing map */
+.dg .v1 { --v: var(--series-1); } .dg .v2 { --v: var(--series-3); } .dg .v3 { --v: var(--series-2); } .dg .v4 { --v: var(--series-4); } .dg .v5 { --v: #8e6bd8; }
+.dg circle.c { fill: var(--v); fill-opacity: .55; }
+.dg path.vr { fill: none; stroke: var(--v); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.dg circle.stop { fill: var(--v); stroke: var(--card); stroke-width: 1.4; }
+.dg .depot2 .wh { fill: var(--ink); stroke: var(--card); stroke-width: 2; stroke-linejoin: round; }
+.dg .depot2 .door { fill: var(--card); } .dg .depot2 .door-l { stroke: var(--ink); stroke-width: 1; }
+.dg .truck2 .halo { fill: var(--card); fill-opacity: .85; }
+.dg .truck2 .tbox { fill: var(--v); } .dg .truck2 .tcab { fill: var(--ink-2); } .dg .truck2 .twin { fill: var(--card); }
+.dg .truck2 .wheel { fill: var(--ink); stroke: var(--card); stroke-width: 1.2; }

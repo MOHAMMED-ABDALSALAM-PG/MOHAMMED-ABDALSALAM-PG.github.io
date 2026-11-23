@@ -192,39 +192,90 @@ def surrogate_scene():
 
 
 # ---------------------------------------------------------------- FILO2 x PMOO collaboration
+def truck_icon(x, y, s=1.0, cls="v1"):
+    """Small side-view delivery truck facing right; (x, y) = road level under the wheels."""
+    return (f'<g class="truck2 {cls}" transform="translate({x:.1f} {y:.1f}) scale({s})">'
+            '<rect class="halo" x="-3" y="-17" width="35" height="21" rx="5"/>'
+            '<rect class="tbox" x="0" y="-14" width="19" height="12" rx="1.8"/>'
+            '<path class="tcab" d="M19.5 -10.5 h5.2 l4.3 4.6 v3.9 h-9.5 z"/><path class="twin" d="M21.2 -9 h3 l2.6 2.9 h-5.6 z"/>'
+            '<circle class="wheel" cx="5" cy="-1" r="2.6"/><circle class="wheel" cx="23" cy="-1" r="2.6"/></g>')
+
+
+def depot_icon(x, y, s=1.0):
+    """Warehouse centred on (x, y)."""
+    return (f'<g class="depot2" transform="translate({x:.1f} {y:.1f}) scale({s})">'
+            '<path class="wh" d="M-13 -2 L0 -12 L13 -2 V11 H-13 Z"/><rect class="door" x="-5" y="2" width="10" height="9" rx="1"/>'
+            '<path class="door-l" d="M-5 5.5 h10 M-5 8.2 h10"/></g>')
+
+
+def vrp_map(x0, y0, W, H, seed=11, n=460, k=5):
+    """Illustrative large-scale VRP: many customers, a central depot, one coloured route per sector, trucks on routes."""
+    import math, random
+    rng = random.Random(seed)
+    cx, cy = x0 + W / 2, y0 + H / 2
+    rx, ry = W / 2 - 8, H / 2 - 8
+    centres = [(rng.uniform(-.7, .7), rng.uniform(-.7, .7)) for _ in range(6)]
+    pts = []
+    while len(pts) < n:
+        if rng.random() < .35:
+            ux, uy = rng.choice(centres); ux += rng.gauss(0, .16); uy += rng.gauss(0, .16)
+        else:
+            ux, uy = rng.uniform(-1, 1), rng.uniform(-1, 1)
+        if ux * ux + uy * uy <= 1 and ux * ux + uy * uy > .02:
+            pts.append((cx + ux * rx, cy + uy * ry))
+    off = 0.35
+    def sector(px, py):
+        a = (math.atan2(py - cy, px - cx) + math.pi + off) % (2 * math.pi)
+        return int(a / (2 * math.pi / k)) % k
+    dots, routes, stops, trucks = [], [], [], []
+    for (px, py) in pts:
+        dots.append(f'<circle class="c v{sector(px, py) + 1}" cx="{px:.1f}" cy="{py:.1f}" r="1.7"/>')
+    for sct in range(k):
+        mine = [(px, py) for px, py in pts if sector(px, py) == sct]
+        far = [(px, py) for px, py in mine if ((px - cx) / rx) ** 2 + ((py - cy) / ry) ** 2 > .2]
+        rng.shuffle(far)
+        chosen = far[:8]
+        allp = chosen + [(cx, cy)]
+        gx, gy = sum(q[0] for q in allp) / len(allp), sum(q[1] for q in allp) / len(allp)
+        ring = sorted(allp, key=lambda q: math.atan2(q[1] - gy, q[0] - gx))
+        i0 = ring.index((cx, cy))
+        ring = ring[i0:] + ring[:i0]          # star-shaped about the centroid, so the loop never crosses itself
+        chosen = ring[1:]
+        seq = ring + [(cx, cy)]
+        routes.append(f'<path class="vr v{sct + 1}" d="M' + " L".join(f"{a:.1f} {b:.1f}" for a, b in seq) + '"/>')
+        stops += [f'<circle class="stop v{sct + 1}" cx="{a:.1f}" cy="{b:.1f}" r="3.2"/>' for a, b in chosen]
+        if sct in (0, 2, 4) and len(chosen) > 5:
+            (ax, ay), (bx, by) = chosen[4], chosen[5]
+            trucks.append(truck_icon((ax + bx) / 2 - 11, (ay + by) / 2 + 5, .8, f"v{sct + 1}"))
+    return "".join(dots) + "".join(routes) + "".join(stops) + depot_icon(cx, cy, 1.05) + "".join(trucks)
+
+
+def _vrp_legend(x, y):
+    return (depot_icon(x + 8, y - 4, .62) + f'<text class="note" x="{x + 20}" y="{y}">depot</text>'
+            + truck_icon(x + 78, y + 4, .62, "v1") + f'<text class="note" x="{x + 100}" y="{y}">vehicle</text>'
+            + f'<circle class="c v3" cx="{x + 166}" cy="{y - 4}" r="2.4"/><circle class="c v2" cx="{x + 172}" cy="{y - 7}" r="2.4"/><circle class="c v5" cx="{x + 171}" cy="{y}" r="2.4"/>'
+            + f'<text class="note" x="{x + 181}" y="{y}">customers</text>')
+
+
 def filo2_scene():
-    import math
-    depot = (110, 165)
-    routes = {
-        "r1": [(60, 80), (100, 60), (150, 75)],
-        "r2": [(185, 120), (200, 175), (180, 225)],
-        "r3": [(130, 260), (70, 250), (40, 200)],
-        "r4": [(30, 140), (45, 105)],
-    }
-    paths, pts = "", ""
-    for cls, cs in routes.items():
-        seq = [depot] + cs + [depot]
-        paths += f'<path class="route thin {cls}" d="M' + " L".join(f"{x} {y}" for x, y in seq) + '"/>'
-        pts += "".join(f'<circle class="cust" cx="{x}" cy="{y}" r="5"/>' for x, y in cs)
-    truck = """<g class="truck" transform="translate(150 290)"><rect class="tbox" x="0" y="-18" width="26" height="16" rx="2"/><path class="tcab" d="M26 -13 h8 l5 6 v5 h-13 z"/><circle class="wheel" cx="7" cy="0" r="3.5"/><circle class="wheel" cx="31" cy="0" r="3.5"/></g>"""
-    svg = f"""<svg viewBox="0 0 520 330" role="img" aria-labelledby="f-filo-t"><title id="f-filo-t">Illustration: vehicle routes from a depot, and FILO2 working inside the PMOO multi-objective loop</title>{ARROW.format(id="arF")}
+    svg = f"""<svg viewBox="0 0 560 340" role="img" aria-labelledby="f-filo-t"><title id="f-filo-t">Illustration: hundreds of customers served from one depot by several vehicles, and FILO2 working inside the PMOO multi-objective loop</title>{ARROW.format(id="arF")}
 <g class="dg">
-<rect class="panel" x="0" y="0" width="230" height="330" rx="14"/>
-{paths}{pts}<rect class="depot" x="{depot[0] - 10}" y="{depot[1] - 10}" width="20" height="20" rx="3"/>
-<text class="lbl" x="{depot[0]}" y="{depot[1] + 30}" text-anchor="middle">depot</text>
-{truck}<text class="note" x="196" y="296">vehicles</text>
-<text class="lbl" x="115" y="28" text-anchor="middle">thousands of customers</text>
-<rect class="box" x="262" y="26" width="244" height="80" rx="12"/>
-<text class="lbl" x="384" y="54" text-anchor="middle">PMOO</text>
-<text class="note" x="384" y="76" text-anchor="middle">NSGA-II · SPEA2 · MOEA/D</text><text class="note" x="384" y="94" text-anchor="middle">keep a population of plans</text>
-<rect class="box accent" x="262" y="150" width="244" height="80" rx="12"/>
-<text class="lbl" x="384" y="178" text-anchor="middle">FILO2 engine</text>
-<text class="note" x="384" y="200" text-anchor="middle">fast local search for very</text><text class="note" x="384" y="218" text-anchor="middle">large routing problems</text>
-<path class="flow" d="M318 108 C300 125 300 132 318 148" marker-end="url(#arF)"/><path class="flow" d="M450 148 C468 132 468 125 450 108" marker-end="url(#arF)"/>
-<text class="note" x="294" y="132" text-anchor="end">improve</text><text class="note" x="474" y="132">return</text>
-<path class="flow" d="M384 232 V266" marker-end="url(#arF)"/>
-<rect class="box" x="262" y="270" width="244" height="46" rx="12"/>
-<text class="lbl" x="384" y="298" text-anchor="middle">a set of trade-off route plans</text>
+<rect class="panel" x="0" y="0" width="292" height="340" rx="14"/>
+<text class="lbl" x="16" y="28">Thousands of customers</text>
+<text class="note" x="16" y="47">each colour is one vehicle's route</text>
+{vrp_map(14, 58, 264, 240)}
+{_vrp_legend(16, 326)}
+<rect class="box" x="314" y="26" width="234" height="80" rx="12"/>
+<text class="lbl" x="431" y="54" text-anchor="middle">PMOO</text>
+<text class="note" x="431" y="76" text-anchor="middle">NSGA-II · SPEA2 · MOEA/D</text><text class="note" x="431" y="94" text-anchor="middle">keep a population of plans</text>
+<rect class="box accent" x="314" y="150" width="234" height="80" rx="12"/>
+<text class="lbl" x="431" y="178" text-anchor="middle">FILO2 engine</text>
+<text class="note" x="431" y="200" text-anchor="middle">fast local search for very</text><text class="note" x="431" y="218" text-anchor="middle">large routing problems</text>
+<path class="flow" d="M368 108 C350 125 350 132 368 148" marker-end="url(#arF)"/><path class="flow" d="M494 148 C512 132 512 125 494 108" marker-end="url(#arF)"/>
+<text class="note" x="346" y="132" text-anchor="end">improve</text><text class="note" x="516" y="132">return</text>
+<path class="flow" d="M431 232 V266" marker-end="url(#arF)"/>
+<rect class="box" x="314" y="270" width="234" height="46" rx="12"/>
+<text class="lbl" x="431" y="298" text-anchor="middle">a set of trade-off route plans</text>
 </g></svg>"""
     cap = ('Illustration of the idea. FILO2 is the open-source heuristic for very large vehicle-routing problems by L. Accorsi and D. Vigo '
            '(<a href="https://doi.org/10.1016/j.cor.2024.106562">Computers &amp; Operations Research, 2024</a>). Ongoing work; no results are reported here.')
@@ -422,32 +473,25 @@ def surrogate_narrow():
 
 
 def filo2_narrow():
-    depot = (170, 120)
-    routes = {"r1": [(110, 50), (160, 30), (215, 48)], "r2": [(250, 90), (268, 140), (240, 185)],
-              "r3": [(175, 205), (110, 200), (80, 160)], "r4": [(70, 110), (82, 70)]}
-    paths, pts = "", ""
-    for cls, cs in routes.items():
-        seq = [depot] + cs + [depot]
-        paths += f'<path class="route thin {cls}" d="M' + " L".join(f"{x} {y}" for x, y in seq) + '"/>'
-        pts += "".join(f'<circle class="cust" cx="{x}" cy="{y}" r="5"/>' for x, y in cs)
-    return f"""<svg class="narrow-fig" viewBox="0 0 340 560" role="img" aria-labelledby="f-filon-t"><title id="f-filon-t">Illustration: vehicle routes from a depot, and FILO2 working inside the PMOO multi-objective loop</title>{ARROW.format(id="arFn")}
+    return f"""<svg class="narrow-fig" viewBox="0 0 340 640" role="img" aria-labelledby="f-filon-t"><title id="f-filon-t">Illustration: hundreds of customers served from one depot by several vehicles, and FILO2 working inside the PMOO multi-objective loop</title>{ARROW.format(id="arFn")}
 <g class="dg">
-<rect class="panel" x="10" y="8" width="320" height="230" rx="14"/>
-{paths}{pts}<rect class="depot" x="{depot[0] - 10}" y="{depot[1] - 10}" width="20" height="20" rx="3"/>
-<text class="lbl" x="{depot[0] + 16}" y="{depot[1] + 5}">depot</text>
-<text class="note" x="170" y="228" text-anchor="middle">thousands of customers, many vehicles</text>
-<path class="flow" d="M170 242 V262" marker-end="url(#arFn)"/>
-<rect class="box" x="30" y="266" width="280" height="70" rx="12"/>
-<text class="lbl" x="170" y="292" text-anchor="middle">PMOO</text>
-<text class="note" x="170" y="314" text-anchor="middle">NSGA-II · SPEA2 · MOEA/D</text><text class="note" x="170" y="330" text-anchor="middle">keep a population of plans</text>
-<rect class="box accent" x="30" y="380" width="280" height="70" rx="12"/>
-<text class="lbl" x="170" y="406" text-anchor="middle">FILO2 engine</text>
-<text class="note" x="170" y="428" text-anchor="middle">fast local search for very</text><text class="note" x="170" y="444" text-anchor="middle">large routing problems</text>
-<path class="flow" d="M110 338 V378" marker-end="url(#arFn)"/><path class="flow" d="M230 378 V338" marker-end="url(#arFn)"/>
-<text class="note" x="102" y="364" text-anchor="end">improve</text><text class="note" x="238" y="364">return</text>
-<path class="flow" d="M170 452 V478" marker-end="url(#arFn)"/>
-<rect class="box" x="30" y="482" width="280" height="44" rx="12"/>
-<text class="lbl" x="170" y="509" text-anchor="middle">a set of trade-off route plans</text>
+<rect class="panel" x="6" y="6" width="328" height="330" rx="14"/>
+<text class="lbl" x="20" y="32">Thousands of customers</text>
+<text class="note" x="20" y="51">each colour is one vehicle's route</text>
+{vrp_map(18, 62, 304, 236)}
+{_vrp_legend(22, 322)}
+<path class="flow" d="M170 340 V360" marker-end="url(#arFn)"/>
+<rect class="box" x="30" y="364" width="280" height="70" rx="12"/>
+<text class="lbl" x="170" y="390" text-anchor="middle">PMOO</text>
+<text class="note" x="170" y="412" text-anchor="middle">NSGA-II · SPEA2 · MOEA/D</text><text class="note" x="170" y="428" text-anchor="middle">keep a population of plans</text>
+<rect class="box accent" x="30" y="478" width="280" height="70" rx="12"/>
+<text class="lbl" x="170" y="504" text-anchor="middle">FILO2 engine</text>
+<text class="note" x="170" y="526" text-anchor="middle">fast local search for very</text><text class="note" x="170" y="542" text-anchor="middle">large routing problems</text>
+<path class="flow" d="M110 436 V476" marker-end="url(#arFn)"/><path class="flow" d="M230 476 V436" marker-end="url(#arFn)"/>
+<text class="note" x="102" y="462" text-anchor="end">improve</text><text class="note" x="238" y="462">return</text>
+<path class="flow" d="M170 550 V576" marker-end="url(#arFn)"/>
+<rect class="box" x="30" y="580" width="280" height="44" rx="12"/>
+<text class="lbl" x="170" y="607" text-anchor="middle">a set of trade-off route plans</text>
 </g></svg>"""
 
 
