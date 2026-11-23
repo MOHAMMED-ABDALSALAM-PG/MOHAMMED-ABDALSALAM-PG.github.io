@@ -793,7 +793,7 @@ def about():
   <section aria-labelledby="edu-h"><h2 id="edu-h" class="block-h">Education</h2><ol class="timeline">{edu}</ol></section>
   <section aria-labelledby="exp-h"><h2 id="exp-h" class="block-h">Professional experience</h2><ol class="timeline">{exp}</ol></section>
 </div>
-<section class="wrap" aria-labelledby="doc-h"><h2 id="doc-h" class="block-h">Doctoral research</h2>
+<section class="wrap" aria-labelledby="doc-h"><h2 id="doc-h" class="block-h">Research</h2>
 <ul class="plain">{''.join('<li>' + e(pt) + '</li>' for pt in PROFILE['doctoral']['points'])}</ul></section>
 <section class="wrap" aria-labelledby="sk-h"><h2 id="sk-h" class="block-h">Skills</h2><div class="skills">{skills}</div><p class="muted">Languages: {e(PROFILE['languages'])}.</p></section>
 <div class="wrap about-grid three">
