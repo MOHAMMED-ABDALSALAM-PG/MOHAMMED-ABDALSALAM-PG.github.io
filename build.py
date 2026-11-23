@@ -784,7 +784,21 @@ def about():
     skills = "".join(f"""<div class="skill-group"><h3>{e(s['group'])}</h3><ul>{''.join('<li>' + e(i) + '</li>' for i in s['items'])}</ul></div>""" for s in PROFILE["skills"])
     lst = lambda xs: "".join(f"<li>{e(x)}</li>" for x in xs)
     body = f"""<section class="wrap page-head"><p class="eyebrow">About</p><h1>Background</h1>
-<p class="lede">I am a PhD student in Information and Communication Technology. Professionally, I am a University Lecturer at the University of the Holy Quran and Islamic Sciences in Sudan (since 2016), after teaching at several colleges from 2015; from 2018 to 2024 I was a research assistant with Wuhan University of Technology and Sudan University of Science and Technology.</p></section>
+<p class="lede">I am a PhD student in Information and Communication Technology. I work on AI and high-performance computing for multi-objective optimisation, and on language technology for the low-resource Sudanese dialect.</p></section>
+<div class="wrap now-then">
+  <section class="nt now" aria-labelledby="now-h"><p class="nt-tag">Now</p><h2 id="now-h">What I am doing</h2><ul>
+    <li><b>PhD research.</b> Multi-objective ship weather routing with evolutionary algorithms (NSGA-II, SPEA2, MOEA/D), accelerated with OpenMP, CUDA and hybrid CPU–GPU execution, and machine-learning surrogates of the S175 ship-performance simulator.</li>
+    <li><b>Large-scale vehicle routing.</b> Collaboration with Prof. Daniele Vigo and Dr. Luca Accorsi on integrating their FILO2 heuristic with PMOO.</li>
+    <li><b>Sudanese dialect NLP.</b> Datasets, hate-speech detection, dialect identification and sentiment analysis with BERT models and large language models.</li>
+    <li><b>Teaching.</b> University Lecturer at the University of the Holy Quran and Islamic Sciences, Sudan (since 2016).</li>
+  </ul></section>
+  <section class="nt then" aria-labelledby="then-h"><p class="nt-tag">Before</p><h2 id="then-h">What I did previously</h2><ul>
+    <li><b>2018 – 2024 · Research Assistant,</b> Wuhan University of Technology (China) and Sudan University of Science and Technology: deep-learning models (CNN, BiGRU, self-attention) for classifying Global Terrorism Database events.</li>
+    <li><b>2015 – 2019 · Lecturer</b> at several Sudanese colleges: computer science and engineering courses, curricula and assessments.</li>
+    <li><b>2013 – 2015 · MSc in Information Technology (First Class),</b> University of Madras, India.</li>
+    <li><b>2012 · BSc in Information Technology,</b> Al-Zaeim Al-Azhari University, Sudan.</li>
+  </ul></section>
+</div>
 <div class="wrap about-grid">
   <section aria-labelledby="edu-h"><h2 id="edu-h" class="block-h">Education</h2><ol class="timeline">{edu}</ol></section>
   <section aria-labelledby="exp-h"><h2 id="exp-h" class="block-h">Professional experience</h2><ol class="timeline">{exp}</ol></section>
