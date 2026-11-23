@@ -87,3 +87,28 @@
   var d = document.querySelector(".side-more");
   if (d && window.matchMedia("(max-width: 860px)").matches) d.removeAttribute("open");
 })();
+// S175 race: simulator vs surrogate evaluations in 10 s of real time (timings from the public repository)
+(function () {
+  var box = document.getElementById("s175-race");
+  if (!box) return;
+  var sim = +box.dataset.sim, sur = +box.dataset.sur, go = document.getElementById("race-go"), raf = 0;
+  var eSim = document.getElementById("race-sim"), eSur = document.getElementById("race-sur");
+  var bSim = document.getElementById("race-sim-bar"), bSur = document.getElementById("race-sur-bar");
+  var maxSur = Math.floor(10 / sur);
+  function draw(t) {
+    var nSim = Math.floor(t / sim), nSur = Math.floor(t / sur);
+    eSim.textContent = (t / sim).toFixed(2);
+    eSur.textContent = nSur.toLocaleString("en-GB");
+    bSim.style.width = Math.max(1, nSim / maxSur * 100) + "%";
+    bSur.style.width = Math.min(100, nSur / maxSur * 100) + "%";
+  }
+  function run() {
+    cancelAnimationFrame(raf); var t0 = performance.now(); go.disabled = true;
+    (function step(now) {
+      var t = Math.min(10, (now - t0) / 1000); draw(t);
+      if (t < 10) raf = requestAnimationFrame(step); else { go.disabled = false; go.textContent = "Run again ▶"; }
+    })(t0);
+  }
+  go.addEventListener("click", run);
+  draw(0);
+})();

@@ -271,7 +271,7 @@ def card_figure(kind):
                 '<rect class="box" x="234" y="30" width="76" height="50" rx="8"/><text class="mono" x="272" y="52" text-anchor="middle">speed</text><text class="mono" x="272" y="68" text-anchor="middle">fuel · motion</text>'
                 '<text class="mono dim" x="160" y="132" text-anchor="middle">simulator ≈ 9–14 s → surrogate ≈ 3 ms</text>')
     elif kind == "swr":
-        bars = [(1.0, "search"), (0.66, "deduplicate"), (0.4, "screen"), (0.2, "include")]
+        bars = [(1.0, "search"), (0.74, "deduplicate"), (0.52, "screen"), (0.34, "include")]
         body = ""
         for i, (f, lab) in enumerate(bars):
             w = 200 * f
@@ -291,13 +291,109 @@ def card_figure(kind):
                 '<rect class="box" x="252" y="40" width="58" height="52" rx="8"/><text class="mono" x="281" y="62" text-anchor="middle">dialect</text><text class="mono" x="281" y="78" text-anchor="middle">label</text>'
                 '<text class="mono dim" x="160" y="140" text-anchor="middle">binary and 18-dialect settings</text>')
     elif kind == "fusion":
-        body = ('<rect class="box" x="12" y="18" width="84" height="36" rx="8"/><text class="mono" x="54" y="40" text-anchor="middle">narrative text</text>'
-                '<rect class="box" x="12" y="62" width="84" height="36" rx="8"/><text class="mono" x="54" y="84" text-anchor="middle">attributes</text>'
-                '<path class="flow" d="M98 36 C116 36 116 52 132 54" marker-end="url(#arC)"/><path class="flow" d="M98 80 C116 80 116 64 132 62" marker-end="url(#arC)"/>'
-                '<rect class="box accent" x="136" y="36" width="80" height="44" rx="8"/><text class="mono" x="176" y="62" text-anchor="middle">fusion model</text>'
+        body = ('<rect class="box" x="8" y="18" width="96" height="36" rx="8"/><text class="mono" x="56" y="40" text-anchor="middle">narrative text</text>'
+                '<rect class="box" x="8" y="62" width="96" height="36" rx="8"/><text class="mono" x="56" y="84" text-anchor="middle">attributes</text>'
+                '<path class="flow" d="M106 36 C120 36 120 52 132 54" marker-end="url(#arC)"/><path class="flow" d="M106 80 C120 80 120 64 132 62" marker-end="url(#arC)"/>'
+                '<rect class="box accent" x="136" y="36" width="84" height="44" rx="8"/><text class="mono" x="178" y="55" text-anchor="middle">fusion</text><text class="mono" x="178" y="69" text-anchor="middle">model</text>'
                 '<path class="flow" d="M218 58 h18" marker-end="url(#arC)"/>'
                 '<rect class="box" x="240" y="36" width="70" height="44" rx="8"/><text class="mono" x="275" y="56" text-anchor="middle">event</text><text class="mono" x="275" y="70" text-anchor="middle">class</text>'
                 '<text class="mono dim" x="160" y="132" text-anchor="middle">Global Terrorism Database</text>')
     else:
         return ""
     return f'<svg class="dg cardfig" viewBox="0 0 320 150" role="img" aria-label="Schematic of the {kind} project">{a}{body}</svg>'
+
+
+# ---------------------------------------------------------------- per-paper thumbnails
+def paper_figure(kind):
+    """Small schematic for a publication card (viewBox 320x150). Illustrations only."""
+    a = ARROW.format(id="arT")
+    if kind == "route":
+        body = (f'<rect class="sea" x="8" y="8" width="304" height="134" rx="10"/>'
+                '<path class="land" d="M8 100 C30 98 44 112 50 142 L8 142 Z"/><path class="land" d="M312 8 L312 60 C292 58 278 44 280 8 Z"/>'
+                '<ellipse class="stormfill" cx="166" cy="76" rx="38" ry="26"/>'
+                '<path class="route r3" d="M40 116 C40 50 160 24 288 34"/><path class="route r1" d="M40 116 C110 92 200 62 288 34"/><path class="route r2" d="M40 116 C150 150 260 120 288 34"/>'
+                '<circle class="port" cx="40" cy="116" r="5"/><circle class="port" cx="288" cy="34" r="5"/>'
+                + cpu(226, 96, 30, 8, 8) + '<text class="mono" x="268" y="116">HPC</text>')
+    elif kind == "hwr":
+        letters = "ا ب ت ث ج ح خ د".split()
+        g = "".join(f'<rect class="box" x="{10 + (i % 4) * 26}" y="{22 + (i // 4) * 30}" width="22" height="26" rx="4"/><text class="ar" x="{21 + (i % 4) * 26}" y="{41 + (i // 4) * 30}" text-anchor="middle">{l}</text>' for i, l in enumerate(letters))
+        layers = "".join(f'<rect class="layer" x="{128 + i * 16}" y="{30 + i * 6}" width="12" height="{70 - i * 12}" rx="2"/>' for i in range(4))
+        body = (g + '<path class="flow" d="M114 52 h10" marker-end="url(#arT)"/>' + layers +
+                '<text class="mono dim" x="152" y="118" text-anchor="middle">CNN</text>'
+                '<path class="flow" d="M194 52 h8" marker-end="url(#arT)"/>'
+                '<rect class="box accent" x="206" y="30" width="60" height="44" rx="8"/><text class="mono" x="236" y="49" text-anchor="middle">KAN +</text><text class="mono" x="236" y="62" text-anchor="middle">attn</text>'
+                '<path class="flow" d="M264 52 h10" marker-end="url(#arT)"/>'
+                '<rect class="box" x="278" y="30" width="34" height="44" rx="8"/><text class="ar big" x="295" y="60" text-anchor="middle">ج</text>'
+                '<text class="mono dim" x="160" y="140" text-anchor="middle">handwritten letter → class</text>')
+    elif kind == "gec":
+        body = ('<rect class="box" x="14" y="18" width="292" height="40" rx="8"/>'
+                '<text class="ar" x="160" y="44" text-anchor="middle">ذهبت الى <tspan class="err">المدرسه</tspan> صباحا</text>'
+                '<path class="flow" d="M160 62 v18" marker-end="url(#arT)"/>'
+                '<rect class="box accent" x="90" y="84" width="140" height="22" rx="6"/><text class="mono" x="160" y="99" text-anchor="middle">seq2seq + multi-task</text>'
+                '<path class="flow" d="M160 108 v8" marker-end="url(#arT)"/>'
+                '<rect class="box" x="14" y="118" width="292" height="28" rx="8"/>'
+                '<text class="ar" x="160" y="137" text-anchor="middle">ذهبت <tspan class="fix">إلى المدرسة</tspan> صباحًا</text>')
+    elif kind == "cache":
+        users = "".join(f'<g transform="translate({x} {y})"><circle class="user" cx="0" cy="-8" r="5"/><path class="user" d="M-7 6 q7 -12 14 0 z"/></g>' for x, y in [(70, 128), (150, 132), (236, 126)])
+        body = ('<rect class="panel" x="8" y="8" width="304" height="134" rx="10"/>'
+                '<rect class="lamp" x="50" y="14" width="40" height="8" rx="3"/><path class="beam" d="M54 22 L36 110 H104 L86 22 Z"/>'
+                '<text class="mono dim" x="70" y="36" text-anchor="middle">VLC</text>'
+                '<path class="tower" d="M250 20 l-10 34 h20 z"/><path class="wavearc" d="M262 22 a10 10 0 0 1 0 16 M268 18 a16 16 0 0 1 0 24"/>'
+                '<text class="mono dim" x="250" y="68" text-anchor="middle">mmWave</text>'
+                '<rect class="box accent" x="128" y="26" width="66" height="40" rx="8"/><text class="mono" x="161" y="43" text-anchor="middle">edge</text><text class="mono" x="161" y="56" text-anchor="middle">cache</text>'
+                '<path class="flow" d="M126 46 H96" marker-end="url(#arT)"/><path class="flow" d="M196 46 H236" marker-end="url(#arT)"/>'
+                '<path class="flow dashed" d="M90 120 C120 100 140 104 150 116"/><text class="mono dim" x="196" y="100" text-anchor="middle">predict movement</text>'
+                + users)
+    elif kind == "gtd":
+        body = ('<rect class="box" x="10" y="16" width="120" height="118" rx="8"/>'
+                '<text class="mono" x="20" y="34">EVENT RECORD</text>'
+                '<rect class="field" x="20" y="42" width="44" height="8" rx="2"/><rect class="field" x="70" y="42" width="50" height="8" rx="2"/>'
+                '<rect class="field" x="20" y="56" width="30" height="8" rx="2"/><rect class="field" x="56" y="56" width="64" height="8" rx="2"/>'
+                '<rect class="txt" x="20" y="74" width="100" height="5" rx="2"/><rect class="txt" x="20" y="84" width="92" height="5" rx="2"/>'
+                '<rect class="txt hi" x="20" y="94" width="60" height="5" rx="2"/><rect class="txt" x="20" y="104" width="96" height="5" rx="2"/><rect class="txt" x="20" y="114" width="70" height="5" rx="2"/>'
+                '<path class="flow" d="M134 75 h18" marker-end="url(#arT)"/>'
+                '<rect class="box accent" x="156" y="44" width="76" height="62" rx="8"/><text class="mono" x="194" y="68" text-anchor="middle">text +</text><text class="mono" x="194" y="82" text-anchor="middle">tabular</text><text class="mono" x="194" y="96" text-anchor="middle">model</text>'
+                '<path class="flow" d="M234 75 h14" marker-end="url(#arT)"/>'
+                '<g class="bars3"><rect x="252" y="50" width="56" height="10" rx="2" class="b1"/><rect x="252" y="66" width="34" height="10" rx="2" class="b2"/><rect x="252" y="82" width="20" height="10" rx="2" class="b2"/></g>'
+                '<text class="mono dim" x="280" y="110" text-anchor="middle">group</text>')
+    elif kind == "trees":
+        def tree(x, y):
+            return (f'<circle class="node" cx="{x}" cy="{y}" r="6"/><circle class="node" cx="{x - 18}" cy="{y + 26}" r="6"/><circle class="node" cx="{x + 18}" cy="{y + 26}" r="6"/>'
+                    f'<circle class="leaf" cx="{x - 28}" cy="{y + 52}" r="5"/><circle class="leaf" cx="{x - 8}" cy="{y + 52}" r="5"/><circle class="leaf" cx="{x + 18}" cy="{y + 52}" r="5"/>'
+                    f'<path class="flow" d="M{x - 3} {y + 5} L{x - 15} {y + 21} M{x + 3} {y + 5} L{x + 15} {y + 21} M{x - 21} {y + 31} L{x - 27} {y + 47} M{x - 15} {y + 31} L{x - 9} {y + 47} M{x + 18} {y + 32} V{y + 47}"/>')
+        body = (tree(50, 24) + tree(122, 24) + tree(194, 24) +
+                '<path class="flow" d="M228 60 h16" marker-end="url(#arT)"/>'
+                '<rect class="box accent" x="248" y="38" width="62" height="44" rx="8"/><text class="mono" x="279" y="57" text-anchor="middle">vote</text><text class="mono" x="279" y="71" text-anchor="middle">→ group</text>'
+                '<text class="mono dim" x="160" y="132" text-anchor="middle">tree ensembles on event attributes</text>')
+    elif kind == "bigru":
+        cells = "".join(f'<rect class="box" x="{20 + i * 46}" y="40" width="36" height="26" rx="6"/><text class="mono" x="{38 + i * 46}" y="57" text-anchor="middle">GRU</text>'
+                        + (f'<path class="flow" d="M{56 + i * 46} 48 h8" marker-end="url(#arT)"/><path class="flow" d="M{64 + i * 46} 60 h-8" marker-end="url(#arT)"/>' if i < 3 else '') for i in range(4))
+        body = ('<rect class="box" x="14" y="96" width="196" height="28" rx="6"/><text class="mono" x="112" y="114" text-anchor="middle">tokens + event features</text>'
+                + cells +
+                '<path class="flow" d="M112 94 V72" marker-end="url(#arT)"/><path class="flow" d="M196 53 h14" marker-end="url(#arT)"/>'
+                '<rect class="box accent" x="214" y="34" width="96" height="38" rx="8"/><text class="mono" x="262" y="51" text-anchor="middle">self-</text><text class="mono" x="262" y="64" text-anchor="middle">attention</text>'
+                '<text class="mono dim" x="262" y="96" text-anchor="middle">→ group</text>')
+    else:
+        return card_figure(kind)
+    return f'<svg class="dg cardfig" viewBox="0 0 320 150" role="img" aria-label="Schematic illustration">{a}{body}</svg>'
+
+
+PAPER_FIG = {
+    "abdalsalam2025towards": "route",
+    "alsayed2026attention": "hwr", "alsayed2025hybrid": "hwr", "alsayed2024impact": "hwr",
+    "mahmoud2026mtagec": "gec", "mahmoud2024bidirectional": "gec",
+    "kombo2026location": "cache", "kombo2025mobility": "cache", "kombo2025collaborative": "cache",
+    "abdalsalam2024textual": "gtd", "abdalsalam2021study": "gtd", "alfatih2019prediction": "trees", "abdalsalam2024bigru": "bigru",
+    "abdalsalam2026hate": "hate", "abdalsalam2026dialect": "dialect",
+}
+
+
+# ---------------------------------------------------------------- S175: simulator vs surrogate race (static markup; JS animates)
+def s175_race():
+    return """<div class="race" id="s175-race" data-sim="8.94" data-sur="0.00265">
+  <div class="race-top"><span class="lab-tag"><span class="pulse"></span>TEN SECONDS OF COMPUTE</span>
+  <button type="button" class="lab-btn" id="race-go">Run ▶</button></div>
+  <div class="race-row"><span class="race-name">Physics simulator</span><div class="race-bar"><i id="race-sim-bar"></i></div><b id="race-sim">0</b><span class="race-u">evaluations</span></div>
+  <div class="race-row"><span class="race-name">Neural surrogate</span><div class="race-bar"><i id="race-sur-bar" class="fast"></i></div><b id="race-sur">0</b><span class="race-u">evaluations</span></div>
+  <p class="mono-line dim">One case from the public S175-ML-surrogate repository: 8.94 s per simulator call vs 2.65 ms per surrogate call (×3,378). Shown in real time.</p>
+</div>"""

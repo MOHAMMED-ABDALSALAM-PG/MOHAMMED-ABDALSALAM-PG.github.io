@@ -13,6 +13,8 @@ from pathlib import Path
 
 import figures
 
+figures.PAPER_FIG.update({"abdalsalam_pmoo": "pmoo", "abdalsalam_s175": "s175", "abdalsalam_swr_review": "swr", "abdalsalam_gtd_fusion": "fusion"})
+
 ROOT = Path(__file__).resolve().parent
 DIST = ROOT / "dist"
 
@@ -317,6 +319,17 @@ def diagram(kind):
         return figures.surrogate_scene()
     if kind == "filo2":
         return figures.filo2_scene()
+    if kind == "race":
+        return figures.s175_race()
+    if kind in ("arabtech", "security", "net"):
+        sets = {"arabtech": [("hwr", "Handwritten character recognition: a CNN extracts features and a KAN or attention head classifies the letter."),
+                             ("gec", "Grammatical error correction: a sequence-to-sequence model rewrites the sentence (example: spelling of hamza and taa marbuta).")],
+                "security": [("gtd", "Event records combine fields and free text; models use both to classify the attack or attribute the group."),
+                             ("bigru", "BiGRU with self-attention over text and event features (PeerJ CS, 2024).")],
+                "net": [("cache", "Indoor VLC and mmWave access with an edge cache; user movement and preferences are predicted to decide what to cache.")]}[kind]
+        wrap_cls = "fig-pair" if len(sets) > 1 else "fig-one"
+        cells = "".join(f'<div><div class="sw-fig">{figures.paper_figure(k)}</div><p class="mono-line dim">{e(c)}</p></div>' for k, c in sets)
+        return f'<figure class="diagram"><div class="{wrap_cls}">{cells}</div><figcaption>Illustrations, not data.</figcaption></figure>'
     if True:
         svg = """<svg viewBox="0 0 680 210" role="img" aria-labelledby="dg-hs-t">
 <title id="dg-hs-t">Hybrid annotation and modelling pipeline for Sudanese Arabic harmful-language detection</title>
@@ -365,6 +378,7 @@ def pub_card(p, compact=False):
     summary = "" if compact else f'<p class="summary">{e(p["summary"])}</p>'
     return f"""<article class="pub" data-year="{p['year']}" data-topic="{p['topic']}" data-status="{p['status']}" data-role="{p['role']}">
   <div class="pub-year" aria-hidden="true">{'' if p['status'] == 'under-consideration' else p['year']}</div>
+  {'' if compact or p['id'] not in figures.PAPER_FIG else '<div class="pub-fig">' + figures.paper_figure(figures.PAPER_FIG[p['id']]) + '</div>'}
   <div class="pub-body">
     <h3 class="pub-title">{e(p['title'])}</h3>
     <p class="authors">{authors_html(p['authors'])}</p>
@@ -489,7 +503,8 @@ def home():
             links.append(f'<a href="{e(p["code_url"])}" rel="noopener">Code</a>')
         venue = e(p["venue"]) + (", " + e(p["details"]) if p.get("details") else "")
         status = "" if p["status"] == "published" else f' · <span class="st">{e(p.get("status_label", ""))}</span>'
-        hl += f"""<li><span class="yr">{p['year']}</span><div>
+        thumb = f'<div class="pub-fig hl-fig">{figures.paper_figure(figures.PAPER_FIG[i])}</div>' if i in figures.PAPER_FIG else ""
+        hl += f"""<li><span class="yr">{p['year']}</span>{thumb}<div>
   <h3>{e(p['title'])}</h3>
   <p class="au">{authors_html(p['authors'])}</p>
   <p class="ve"><em>{venue}</em>{status}</p>
@@ -511,7 +526,7 @@ def home():
     body = f"""
 <section class="intro-block">
   <p class="eyebrow">PhD Candidate · AI &amp; HPC Researcher</p>
-  <h1>Fast multi-objective optimisation for ships at sea, and AI for low-resource Arabic.</h1>
+  <h1>HPC-based multi-objective optimisation for ships at sea, and AI for low-resource Arabic.</h1>
   <p>I design algorithms that make hard decisions computable. My doctoral research builds multi-objective evolutionary optimisers and machine-learning surrogates for ship weather routing, and accelerates them on multi-core CPUs and GPUs.</p>
   <p>In parallel, I build data and models for Sudanese Arabic, where labelled data are scarce: corpora, LLM-assisted annotation, harmful-language detection and dialect identification. I have taught computer science at university level since 2015.</p>
   <p class="note"><span class="pulse" aria-hidden="true"></span>Open to research collaborations in optimisation, HPC and Arabic NLP</p>
@@ -593,7 +608,7 @@ def research():
          "Physics-based ship-performance models are accurate but slow; inside an optimiser they are called millions of times. Infeasible operating points and safety-relevant outputs make naive regression risky.",
          "Neural surrogate models trained on large simulator grids (126 million evaluations of the S175 model in the ERA-NET MarTERA ROUTING project), explicit feasibility classifiers, asymmetric loss functions that bias errors toward conservative predictions, leakage-safe splits and off-grid validation against fresh simulator runs.",
          "Reliable surrogates move expensive physics out of the inner loop of route optimisation while keeping its safety-critical behaviour visible.",
-         [], ["s175"]),
+         [], ["s175", "race"]),
         ("arabic-nlp", "arabic-nlp", "Low-resource Arabic NLP and Sudanese dialects",
          "Sudanese Arabic has very few labelled datasets, so harmful-language detection, sentiment analysis and dialect identification lag far behind Modern Standard Arabic and the better-resourced dialects.",
          "Corpus construction from social media and app reviews; hybrid annotation that combines Sudanese-specific weak-supervision rules with large language model labelling and native-speaker review; continued pre-training of a Sudanese BERT (SudaBERT-v2); systematic comparison of fine-tuned Arabic BERT models and zero/few-shot LLMs; explainability with SHAP and LIME.",
@@ -603,17 +618,17 @@ def research():
          "Arabic script is cursive with position-dependent letter forms, and Arabic grammar is morphologically rich — both hard for recognition and correction systems.",
          "Convolutional networks, CNN–Kolmogorov–Arnold Network hybrids and attention for handwritten character recognition; sequence-to-sequence and multi-task grammatical error correction with large synthetic training data (co-authored work).",
          "Better recognition and correction tools support digitisation, education and writing assistance for Arabic.",
-         ["alsayed2026attention", "alsayed2025hybrid", "alsayed2024impact", "mahmoud2026mtagec", "mahmoud2024bidirectional"], None),
+         ["alsayed2026attention", "alsayed2025hybrid", "alsayed2024impact", "mahmoud2026mtagec", "mahmoud2024bidirectional"], ["arabtech"]),
         ("security", "security-analytics", "Machine learning for security-event analytics",
          "Event databases such as the Global Terrorism Database combine structured attributes with free-text descriptions, are heavily imbalanced, and are used by analysts to study patterns of political violence.",
          "Tree-based ensembles, DistilBERT text features combined with structured attributes, BiGRU with self-attention, class rebalancing; later work on multi-source fusion and entity recognition.",
          "Shows how textual evidence can be integrated with tabular records to support analysis; this line of work began during the author's research-assistant period (2018–2024).",
-         ["alfatih2019prediction", "abdalsalam2021study", "abdalsalam2024textual", "abdalsalam2024bigru"], None),
+         ["alfatih2019prediction", "abdalsalam2021study", "abdalsalam2024textual", "abdalsalam2024bigru"], ["security"]),
         ("networking", "networking", "Intelligent networking (co-authored)",
          "Indoor edge networks combining visible-light and millimetre-wave links must decide what to cache near moving users.",
          "Mobility prediction (BiGRU, transformers), preference modelling (collaborative filtering, NeuMF), LSTM forecasting and reinforcement learning (Soft Actor-Critic) for cache placement under software-defined control.",
          "Contributes machine-learning methods to proactive content delivery in next-generation networks.",
-         ["kombo2025collaborative", "kombo2025mobility", "kombo2026location"], None),
+         ["kombo2025collaborative", "kombo2025mobility", "kombo2026location"], ["net"]),
     ]
     NOTES = {
         "surrogates": '<p class="muted">Manuscript under consideration; code at <a href="https://github.com/MOHAMMED-ABDALSALAM-PG/S175-ML-surrogate">S175-ML-surrogate</a>.</p>',
