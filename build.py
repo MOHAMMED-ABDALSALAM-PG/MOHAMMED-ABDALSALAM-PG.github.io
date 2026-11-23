@@ -563,22 +563,22 @@ def home():
 </section>
 
 <section class="block" id="lab" aria-labelledby="lab-h">
-  <div class="block-head"><div><p class="eyebrow">Interactive routing lab</p><h2 id="lab-h">Weather routing in motion.</h2></div><a href="/research/#maritime">Explore the research ↗</a></div>
-  <p class="block-lede">Make the storm stronger, choose what matters most, and watch the ship change its route and speed.</p>
+  <div class="block-head"><div><p class="eyebrow">Interactive demonstration</p><h2 id="lab-h">Multi-objective ship weather routing</h2></div><a href="/research/#maritime">Explore the research ↗</a></div>
+  <p class="block-lede">Adjust the storm intensity and the priority of each objective to see how the preferred route and speed change.</p>
   <div id="routing-lab" class="lab"><noscript>{figures.routing_scene()}</noscript></div>
   <p class="mono-line dim">Illustrative model, not the research code · 9 paths × 5 speeds · objectives: time, fuel, highest wave met</p>
 </section>
 
 <section class="block" aria-labelledby="prof-h">
-  <div class="block-head"><div><p class="eyebrow">Research profile</p><h2 id="prof-h">From ocean routes to Arabic dialects.</h2></div><a href="/research/">Research overview →</a></div>
-  <p class="block-lede">One thread runs through the work: methods that are fast, honest about uncertainty, and tested against real constraints.</p>
+  <div class="block-head"><div><p class="eyebrow">Research profile</p><h2 id="prof-h">Research areas</h2></div><a href="/research/">Research overview →</a></div>
+  <p class="block-lede">The work combines optimisation, high-performance computing and machine learning, evaluated under realistic operational constraints.</p>
   <ul class="prof-rows">{prof}</ul>
 </section>
 
 <section class="block" aria-labelledby="bring-h">
-  <p class="eyebrow">What I bring</p><h2 id="bring-h">Research that runs, end to end.</h2>
+  <p class="eyebrow">Expertise</p><h2 id="bring-h">Research competencies</h2>
   <div class="bring">
-    <div><h3>End-to-end research</h3><p>Problem framing, algorithm design, experiments with fixed protocols, statistics, papers and reproducibility packages.</p></div>
+    <div><h3>Research methodology</h3><p>Problem framing, algorithm design, experiments with fixed protocols, statistics, papers and reproducibility packages.</p></div>
     <div><h3>Parallel computing</h3><p>OpenMP, CUDA and hybrid CPU–GPU implementations, benchmarked fairly against serial baselines.</p></div>
     <div><h3>Teaching and communication</h3><p>University lecturer since 2015, international collaborations, and clear explanation of technical results.</p></div>
   </div>
@@ -586,30 +586,30 @@ def home():
 </section>
 
 <section class="block" aria-labelledby="sw-h">
-  <div class="block-head"><div><p class="eyebrow">Research software</p><h2 id="sw-h">From papers to working code.</h2></div><a href="/projects/">All software &amp; data →</a></div>
+  <div class="block-head"><div><p class="eyebrow">Software</p><h2 id="sw-h">Research software</h2></div><a href="/projects/">All software &amp; data →</a></div>
   <div class="sw-grid">{cards}</div>
 </section>
 
 <section class="block" aria-labelledby="data-h">
-  <div class="block-head"><div><p class="eyebrow">Low-resource Sudanese dialect</p><h2 id="data-h">Datasets for the Sudanese dialect.</h2></div><a href="/data/">Datasets &amp; ethics →</a></div>
+  <div class="block-head"><div><p class="eyebrow">Data resources</p><h2 id="data-h">Low-resource Sudanese dialect datasets</h2></div><a href="/data/">Datasets &amp; ethics →</a></div>
   <p class="block-lede">Corpora and labelled datasets collected from public posts and app reviews, with personal details removed and labels shared openly where the platforms allow.</p>
   <ul class="ds-stats">{data_stats}</ul>
   <ul class="src-chips">{src_chips}</ul>
 </section>
 
 <section class="block" aria-labelledby="hl-h">
-  <div class="block-head"><div><p class="eyebrow">First-author highlights</p><h2 id="hl-h">Selected papers.</h2></div><a href="/publications/">All publications →</a></div>
+  <div class="block-head"><div><p class="eyebrow">First-author publications</p><h2 id="hl-h">Selected publications</h2></div><a href="/publications/">All publications →</a></div>
   <ol class="hl">{hl}</ol>
 </section>
 
 <section class="block" aria-labelledby="rec-h">
-  <p class="eyebrow">Professional record</p><h2 id="rec-h">Experience and education.</h2>
+  <p class="eyebrow">Professional record</p><h2 id="rec-h">Experience and education</h2>
   <ul class="rec">{rec_html}</ul>
 </section>
 
 <section class="block" id="contact" aria-labelledby="ct-h">
-  <p class="eyebrow">Contact</p><h2 id="ct-h">Let's work together.</h2>
-  <p class="block-lede">I welcome conversations about research collaboration, datasets, and academic positions.</p>
+  <p class="eyebrow">Correspondence</p><h2 id="ct-h">Contact</h2>
+  <p class="block-lede">For research collaboration, dataset requests and academic enquiries, please contact me by email.</p>
   <p><a class="mail-big" href="mailto:{PROFILE['email']}">{e(PROFILE['email'])} →</a></p>
 </section>"""
     return page("/", PROFILE["name"], "Mohammed Abdalsalam, PhD candidate: multi-objective ship weather routing, parallel optimisation on CPUs and GPUs, machine-learning surrogates, and Sudanese Arabic NLP.",
@@ -683,10 +683,10 @@ def research():
   {''.join(diagram(k) for k in (dg or []))}
   {('<h3 class="refs-h">Related papers</h3>' + refs(ids)) if ids else NOTES.get(sid, '')}
 </section>""")
-    body = f"""<section class="wrap page-head"><p class="eyebrow">Research</p><h1>Algorithms, computing and language</h1>
+    body = f"""<section class="wrap page-head"><p class="eyebrow">Research</p><h1>Research</h1>
 <p class="lede">My current research area, multi-objective weather routing optimisation using AI techniques and parallel acceleration, connects evolutionary optimisation, machine learning and parallel computing. Alongside it, I build data and models for low-resource Arabic.</p>
 <nav class="toc" aria-label="Research areas"><ul>{toc}</ul></nav></section>
-<section class="wrap"><h2 class="story-h">Research Framework</h2>{figures.overview_story()}</section>
+<section class="wrap"><h2 class="story-h">Research Overview</h2>{figures.overview_story()}</section>
 <div class="wrap">{''.join(blocks)}</div>"""
     return page("/research/", "Research", "Research directions of Mohammed Abdalsalam: ship weather routing, parallel multi-objective optimisation, ML surrogates, and low-resource Arabic NLP.", body)
 
