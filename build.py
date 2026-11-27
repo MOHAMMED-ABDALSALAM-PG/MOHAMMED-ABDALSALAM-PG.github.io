@@ -5,6 +5,7 @@ Standard library only. Reads data/*.json and writes the site to dist/.
 Run:  python3 build.py            (outputs dist/)
 """
 import html
+import re
 import json
 import math
 import shutil
@@ -130,6 +131,7 @@ def page(path, title, description, body, extra_head=""):
 </main>
 </div>
 <script src="/assets/js/site.js" defer></script>
+{analytics_tag()}
 </body>
 </html>
 """
@@ -442,6 +444,15 @@ def project_card(p, accepted_by_id):
 
 
 # --------------------------------------------------------------------------- pages
+def analytics_tag():
+    """GoatCounter visit counter (no cookies). Off while profile.json has no "goatcounter" code."""
+    code = PROFILE.get("goatcounter", "")
+    if not re.fullmatch(r"[a-z0-9-]{2,50}", code or ""):
+        return ""
+    return (f'<script data-goatcounter="https://{code}.goatcounter.com/count" '
+            'async src="https://gc.zgo.at/count.js"></script>')
+
+
 def sidebar():
     pubs = PUBS["publications"]
     links = [(f"https://orcid.org/{PROFILE['orcid']}", "ORCID"), (f"https://github.com/{PROFILE['github']}", "GitHub"),
